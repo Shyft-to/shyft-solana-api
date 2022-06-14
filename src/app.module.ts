@@ -10,6 +10,7 @@ import { configuration } from './common/configs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { User, UserSchema } from './schemas/user.schema';
 import { Emailer } from './common/utils/emailer';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import { Emailer } from './common/utils/emailer';
     AccountModule,
     NftModule,
     AuthModule,
+    EventEmitterModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService, Emailer],
 })
-export class AppModule {}
+export class AppModule { }

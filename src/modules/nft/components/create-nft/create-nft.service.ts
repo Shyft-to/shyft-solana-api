@@ -6,20 +6,23 @@ import { Blob, NFTStorage } from 'nft.storage';
 import { snakeCase } from 'lodash';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { AccountService } from 'src/modules/account/account.service';
+import { MintNFTResponse } from '@metaplex/js/lib/actions';
+import { NftCreationEvent } from './events/nft-creation.event';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 const storageClient = new NFTStorage({
   token:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGZGMUMyQ0IxY2M4ZUI2OWE1MDVEZDM5YjU1NGUwQUM0RkJCMWY2QjAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MjM4Mzk3OTUyNywibmFtZSI6InNoeWZ0In0.Yu2UPw5UBCsddrE4-fdcIp8oPiVy0VjTlSTJgku-EUw',
 });
 
-interface IpfsUploadResponse {
+export interface IpfsUploadResponse {
   cid: string;
   uri: string;
 }
 
 @Injectable()
 export class CreateNftService {
-  constructor(private accountService: AccountService) {}
+  constructor(private accountService: AccountService, private eventEmitter: EventEmitter2) { }
   async prepareMetaData(
     createNftDto: CreateNftDto,
     image: string,
@@ -85,5 +88,17 @@ export class CreateNftService {
       maxSupply: 1,
     });
     return nft;
+  }
+
+  updateNftInDb(createNftDto: CreateNftDto, metaDataURI: string, uploadedImageDetails: IpfsUploadResponse, nft: MintNFTResponse) {
+
+    let nftCreationEvent = new NftCreationEvent()
+    nftCreationEvent.createNftDto = createNftDto
+    nftCreationEvent.metaDataUri = metaDataURI
+    nftCreationEvent.uploadedImageData = uploadedImageDetails
+    nftCreationEvent.nft = nft
+    this.eventEmitter.emit(
+      'nft.created', nftCreationEvent
+    );
   }
 }
