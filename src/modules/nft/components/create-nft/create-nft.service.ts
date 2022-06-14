@@ -90,13 +90,14 @@ export class CreateNftService {
     return nft;
   }
 
-  updateNftInDb(createNftDto: CreateNftDto, metaDataURI: string, uploadedImageDetails: IpfsUploadResponse, nft: MintNFTResponse) {
+  createNftInDb(createNftDto: CreateNftDto, metaDataURI: string, uploadedImageDetails: IpfsUploadResponse, nft: MintNFTResponse, user: string) {
 
     let nftCreationEvent = new NftCreationEvent()
     nftCreationEvent.createNftDto = createNftDto
     nftCreationEvent.metaDataUri = metaDataURI
     nftCreationEvent.uploadedImageData = uploadedImageDetails
     nftCreationEvent.nft = nft
+    nftCreationEvent.user = user
     this.eventEmitter.emit(
       'nft.created', nftCreationEvent
     );

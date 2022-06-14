@@ -10,11 +10,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/schemas/user.schema';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { NftCreatedListener } from './components/create-nft/listeners/nft-created.listener';
+import { NftMetaData, NftMetaDataSchema } from 'src/schemas/nft.metadata.schema';
 
 @Module({
   controllers: [CreateNftController, ReadNftController, BurnNftController],
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: NftMetaData.name, schema: NftMetaDataSchema }
+    ]),
     EventEmitterModule.forRoot(),
   ],
   providers: [CreateNftService, AccountService, ReadNftService, BurnNftService, NftCreatedListener],

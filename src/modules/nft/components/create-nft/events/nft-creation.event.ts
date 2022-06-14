@@ -7,4 +7,5 @@ export class NftCreationEvent {
     uploadedImageData: IpfsUploadResponse;
     metaDataUri: string;
     nft: MintNFTResponse;
+    user: string;
 }
