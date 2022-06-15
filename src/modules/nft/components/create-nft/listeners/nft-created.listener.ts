@@ -27,7 +27,9 @@ export class NftCreatedListener {
         datum.mint = event.nft.mint.toString()
         datum.metadata = event.nft.metadata.toString()
         datum.edition = event.nft.edition.toString()
-        datum.attributes = event.createNftDto.attributes
+
+        datum.attributes = event.createNftDto.getAttributesJson()
+        //datum.attributes = event.createNftDto.attributes
 
         this.nftMetaDataModel.create(datum)
             .then(result => {

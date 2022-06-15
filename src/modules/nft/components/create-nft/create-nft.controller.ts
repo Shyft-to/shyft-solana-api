@@ -26,18 +26,18 @@ export class CreateNftController {
       new Blob([file.buffer], { type: file.mimetype }),
     );
     const image = uploadImage.uri;
-    //console.log("image uploaded")
+    console.log("image uploaded")
     const metaDataURI = await this.createNftService.prepareMetaData(
       createNftDto,
       image,
     );
-    //console.log("metadata uploaded")
+    console.log("metadata uploaded")
     const nft = await this.createNftService.mintNft(createNftDto, metaDataURI);
 
-    //console.log("minted")
+    console.log("minted")
     this.createNftService.createNftInDb(createNftDto, metaDataURI, uploadImage, nft, req.user)
 
-    //console.log("db updated")
+    console.log("db updated")
     return {
       success: true,
       message: 'NFT created successfully',

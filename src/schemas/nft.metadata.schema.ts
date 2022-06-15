@@ -3,11 +3,6 @@ import { Document } from 'mongoose';
 
 export type NftMetaDataDocument = NftMetaData & Document
 
-interface attribute {
-    traitType: string;
-    value: string;
-}
-
 @Schema()
 export class NftMetaData {
     @Prop({ required: true })
@@ -52,8 +47,8 @@ export class NftMetaData {
     @Prop({ required: true })
     edition: string
 
-    @Prop({ required: false })
-    attributes: Array<attribute>
+    @Prop({ required: false, type: Object })
+    attributes: Object
 }
 
 export const NftMetaDataSchema = SchemaFactory.createForClass(NftMetaData);

@@ -34,4 +34,13 @@ export class CreateNftDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value), { toClassOnly: true })
   readonly sellerFeeBasisPoints: number;
+
+  public getAttributesJson(): any {
+    let js = {}
+    for (let atb of this.attributes) {
+      js[atb.traitType] = atb.value
+    }
+    //let json = JSON.stringify(js)
+    return js
+  }
 }
