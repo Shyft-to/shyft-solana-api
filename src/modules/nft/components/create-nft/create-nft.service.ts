@@ -11,7 +11,7 @@ export class CreateNftService {
   constructor(
     private accountService: AccountService,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
   async mintNft(mintNftDto: MintNftDto): Promise<any> {
     const { metadata_uri, max_supply, network, private_key } = mintNftDto;
     if (!metadata_uri) {
@@ -30,6 +30,7 @@ export class CreateNftService {
     const nftCreationEvent = new NftCreationEvent(
       nft.mint.toString(),
       mintNftDto.network,
+      mintNftDto.userId,
     );
     this.eventEmitter.emit('nft.created', nftCreationEvent);
 

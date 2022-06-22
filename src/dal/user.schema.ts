@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -10,6 +10,8 @@ export class User {
 
   @Prop({ required: true })
   api_key: string;
+
+  id: ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
