@@ -21,7 +21,7 @@ export class UpdateNftController {
   constructor(
     private updateNftService: UpdateNftService,
     private storageService: StorageMetadataService,
-  ) {}
+  ) { }
 
   @UpdateOpenApi()
   @Post('update')
@@ -45,7 +45,7 @@ export class UpdateNftController {
       attributes: updateNftDto.attributes,
       share: updateNftDto.share,
       seller_fee_basis_points: updateNftDto.seller_fee_basis_points,
-      external_url: updateNftDto.externalUrl,
+      external_url: updateNftDto.external_url,
     });
 
     const res = await this.updateNftService.updateNft(updateNftDto, uri);

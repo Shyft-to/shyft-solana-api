@@ -86,7 +86,7 @@ export class CreateNftDto {
   })
   @IsOptional()
   @IsString()
-  readonly externalUrl: string;
+  readonly external_url: string;
 
   @ApiProperty({
     title: 'max_supply',

@@ -106,7 +106,7 @@ export class UpdateNftDto {
   })
   @IsOptional()
   @IsString()
-  readonly externalUrl: string;
+  readonly external_url: string;
 
   @ApiProperty({
     title: 'is_mutable',
