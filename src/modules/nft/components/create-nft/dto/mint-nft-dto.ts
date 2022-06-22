@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
+import { isObjectIdOrHexString, isValidObjectId, ObjectId } from 'mongoose';
 import { Network } from 'src/dto/netwotk.dto';
 
 export class MintNftDto {
@@ -16,4 +17,7 @@ export class MintNftDto {
   @IsNotEmpty()
   @IsNumber()
   readonly max_supply: number;
+
+  @IsNotEmpty()
+  readonly userId: ObjectId
 }

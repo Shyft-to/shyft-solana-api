@@ -8,10 +8,14 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
+import { ObjectId } from 'mongoose';
+import { User } from 'src/dal/user.schema';
 import { AuthService } from './auth.service';
 
 interface IGetUserAuthInfoRequest extends Request {
-  user: string; // or any other type
+  email: string; // or any other type
+  apiKey: string;
+  id: ObjectId;
 }
 
 @Injectable()
@@ -19,7 +23,7 @@ export class AuthGuard implements CanActivate {
   public constructor(
     public readonly reflector: Reflector,
     public readonly authService: AuthService,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> | never {
     try {
@@ -38,11 +42,13 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException();
       }
       if (Array.isArray(apiKey)) apiKey = apiKey[0];
-      const email: string = await this.authService.validateUser(apiKey);
-      if (!email) {
+      const userData: User = await this.authService.validateUser(apiKey);
+      if (!userData) {
         throw new UnauthorizedException();
       }
-      req.user = email;
+      req.email = userData.email;
+      req.id = userData.id;
+      req.apiKey = userData.api_key;
       return true;
     } catch (e) {
       throw new HttpException(

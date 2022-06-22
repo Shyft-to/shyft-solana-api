@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Post,
+  Req,
   UploadedFile,
   UseInterceptors,
   Version,
@@ -13,6 +14,7 @@ import { CreateNftService } from './create-nft.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { StorageMetadataService } from '../storage-metadata/storage-metadata.service';
 import { CreateOpenApi } from './open-api';
+import { Request } from 'express';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
@@ -21,7 +23,7 @@ export class CreateNftController {
   constructor(
     private createNftService: CreateNftService,
     private storageService: StorageMetadataService,
-  ) {}
+  ) { }
 
   @CreateOpenApi()
   @Post('create')
@@ -30,6 +32,7 @@ export class CreateNftController {
   async createNft(
     @UploadedFile() file: Express.Multer.File,
     @Body() createNftDto: CreateNftDto,
+    @Req() request: any
   ): Promise<any> {
     const uploadImage = await this.storageService.uploadToIPFS(
       new Blob([file.buffer], { type: file.mimetype }),
@@ -52,6 +55,7 @@ export class CreateNftController {
       private_key: createNftDto.private_key,
       metadata_uri: uri,
       max_supply: createNftDto.max_supply,
+      userId: request.id,
     };
     const nft = await this.createNftService.mintNft(mintNftRequest);
     return {
