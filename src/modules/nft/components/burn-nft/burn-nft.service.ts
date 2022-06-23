@@ -6,7 +6,7 @@ import { Token, ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/sp
 
 import { BurnNftDto } from './dto/burn-nft.dto';
 import { AccountService } from 'src/modules/account/account.service';
-import { NftDeleteEvent } from '../db-sync/events';
+import { NftDeleteEvent } from '../../../db/db-sync/db.events';
 
 @Injectable()
 export class BurnNftService {

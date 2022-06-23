@@ -12,33 +12,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/dal/user.schema';
 import { StorageMetadataController } from './components/storage-metadata/storage-metadata.controller';
 import { StorageMetadataService } from './components/storage-metadata/storage-metadata.service';
-import { HttpModule } from '@nestjs/axios';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { RemoteDataFetcherService } from './components/remote-data-fetcher/data-fetcher.service';
-import { NftOperationsEventListener } from './components/db-sync/service';
-import { NftInfoAccessor } from 'src/dal/nft-repo/nft-info.accessor';
-import { NftInfo, NftInfoSchema } from 'src/dal/nft-repo/nft-info.schema';
 
 @Module({
   controllers: [CreateNftController, ReadNftController, BurnNftController, UpdateNftController, StorageMetadataController],
-  imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: NftInfo.name, schema: NftInfoSchema },
-    ]),
-    HttpModule,
-    EventEmitterModule.forRoot(),
-  ],
-  providers: [
-    CreateNftService,
-    AccountService,
-    ReadNftService,
-    BurnNftService,
-    UpdateNftService,
-    StorageMetadataService,
-    RemoteDataFetcherService,
-    NftOperationsEventListener,
-    NftInfoAccessor,
-  ],
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), EventEmitterModule.forRoot()],
+  providers: [CreateNftService, AccountService, ReadNftService, BurnNftService, UpdateNftService, StorageMetadataService],
 })
 export class NftModule {}

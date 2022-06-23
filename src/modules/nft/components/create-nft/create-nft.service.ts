@@ -4,7 +4,7 @@ import { actions, Connection, NodeWallet } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AccountService } from 'src/modules/account/account.service';
 import { MintNftDto } from './dto/mint-nft-dto';
-import { NftCreationEvent } from '../db-sync/events';
+import { NftCreationEvent } from '../../../db/db-sync/db.events';
 
 @Injectable()
 export class CreateNftService {

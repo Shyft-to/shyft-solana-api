@@ -9,7 +9,7 @@ import { NftCreationEvent, NftDeleteEvent, NftReadEvent, NftReadInWalletEvent, N
 const afterNftCreationWaitTime_ms = 5000;
 
 @Injectable()
-export class NftOperationsEventListener {
+export class DbSyncService {
   constructor(private remoteDataFetcher: RemoteDataFetcherService, private nftInfoAccessor: NftInfoAccessor) {}
 
   @OnEvent('nft.created', { async: true })

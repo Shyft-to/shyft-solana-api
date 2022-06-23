@@ -3,10 +3,10 @@ import { ReadNftDto } from './dto/read-nft.dto';
 import { ReadAllNftDto } from './dto/read-all-nft.dto';
 import { nftHelper } from '../../nft.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NftReadEvent, NftReadInWalletEvent } from '../db-sync/events';
-import { RemoteDataFetcherService } from '../remote-data-fetcher/data-fetcher.service';
+import { NftReadEvent, NftReadInWalletEvent } from '../../../db/db-sync/db.events';
+import { RemoteDataFetcherService } from '../../../db/remote-data-fetcher/data-fetcher.service';
 import { NftInfoAccessor } from '../../../../dal/nft-repo/nft-info.accessor';
-import { FetchAllNftDto, FetchNftDto } from '../remote-data-fetcher/dto/data-fetcher.dto';
+import { FetchAllNftDto, FetchNftDto } from '../../../db/remote-data-fetcher/dto/data-fetcher.dto';
 
 @Injectable()
 export class ReadNftService {
