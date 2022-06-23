@@ -6,16 +6,12 @@ import { User, UserDocument } from 'src/dal/user.schema';
 import { GetApiKeyDto } from './dto/get-api-key.dto';
 import { Emailer } from './common/utils/emailer';
 
-const alphabet =
-  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-';
+const alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-';
 const nanoid = customAlphabet(alphabet, 16);
 
 @Injectable()
 export class AppService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private readonly emailer: Emailer,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private readonly emailer: Emailer) {}
   getHello(): string {
     return 'Welcome to explore Shyft APIs!';
   }
@@ -35,11 +31,7 @@ export class AppService {
       const templateData = {
         apiKey: result.api_key,
       };
-      await this.emailer.sendEmail(
-        destinationEmailAddess,
-        templateName,
-        templateData,
-      );
+      await this.emailer.sendEmail(destinationEmailAddess, templateName, templateData);
       return true;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

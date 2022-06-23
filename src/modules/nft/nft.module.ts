@@ -20,13 +20,7 @@ import { NftInfoAccessor } from 'src/dal/nft-repo/nft-info.accessor';
 import { NftInfo, NftInfoSchema } from 'src/dal/nft-repo/nft-info.schema';
 
 @Module({
-  controllers: [
-    CreateNftController,
-    ReadNftController,
-    BurnNftController,
-    UpdateNftController,
-    StorageMetadataController,
-  ],
+  controllers: [CreateNftController, ReadNftController, BurnNftController, UpdateNftController, StorageMetadataController],
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },

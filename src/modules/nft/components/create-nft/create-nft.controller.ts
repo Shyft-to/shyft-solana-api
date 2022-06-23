@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Req,
-  UploadedFile,
-  UseInterceptors,
-  Version,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, UploadedFile, UseInterceptors, Version } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Blob } from 'nft.storage';
 import { ApiTags, ApiSecurity } from '@nestjs/swagger';
@@ -20,24 +12,16 @@ import { Request } from 'express';
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller('nft')
 export class CreateNftController {
-  constructor(
-    private createNftService: CreateNftService,
-    private storageService: StorageMetadataService,
-  ) { }
+  constructor(private createNftService: CreateNftService, private storageService: StorageMetadataService) {}
 
   @CreateOpenApi()
   @Post('create')
   @Version('1')
   @UseInterceptors(FileInterceptor('file'))
-  async createNft(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() createNftDto: CreateNftDto,
-    @Req() request: any
-  ): Promise<any> {
-    const uploadImage = await this.storageService.uploadToIPFS(
-      new Blob([file.buffer], { type: file.mimetype }),
-    );
+  async createNft(@UploadedFile() file: Express.Multer.File, @Body() createNftDto: CreateNftDto, @Req() request: any): Promise<any> {
+    const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
     const image = uploadImage.uri;
+
     const { uri } = await this.storageService.prepareMetaData({
       network: createNftDto.network,
       private_key: createNftDto.private_key,
@@ -50,6 +34,7 @@ export class CreateNftController {
       seller_fee_basis_points: createNftDto.seller_fee_basis_points,
       external_url: createNftDto.externalUrl,
     });
+
     const mintNftRequest = {
       network: createNftDto.network,
       private_key: createNftDto.private_key,
@@ -57,6 +42,7 @@ export class CreateNftController {
       max_supply: createNftDto.max_supply,
       userId: request.id,
     };
+
     const nft = await this.createNftService.mintNft(mintNftRequest);
     return {
       success: true,

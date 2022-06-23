@@ -47,8 +47,7 @@ export class NftData {
     nftDbDto.is_mutable = this.onChainMetadata.isMutable;
     nftDbDto.name = this.onChainMetadata.data.name;
     nftDbDto.symbol = this.onChainMetadata.data.symbol;
-    nftDbDto.seller_fee_basis_points =
-      this.onChainMetadata.data.sellerFeeBasisPoints;
+    nftDbDto.seller_fee_basis_points = this.onChainMetadata.data.sellerFeeBasisPoints;
     nftDbDto.metadata_uri = this.onChainMetadata.data.uri;
     nftDbDto.creators = this.onChainMetadata.data?.creators.map((cr) => {
       return {

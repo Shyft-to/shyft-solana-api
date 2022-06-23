@@ -1,15 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bs58 from 'bs58';
-import {
-  Connection,
-  clusterApiUrl,
-  Keypair,
-  LAMPORTS_PER_SOL,
-  Transaction,
-  SystemProgram,
-  PublicKey,
-  sendAndConfirmTransaction,
-} from '@solana/web3.js';
+import { Connection, clusterApiUrl, Keypair, LAMPORTS_PER_SOL, Transaction, SystemProgram, PublicKey, sendAndConfirmTransaction } from '@solana/web3.js';
 import { BalanceCheckDto } from './dto/balance-check.dto';
 import { SendSolDto } from './dto/send-sol.dto';
 
@@ -47,11 +38,7 @@ export class AccountService {
       );
 
       // Sign transaction, broadcast, and confirm
-      const signature = await sendAndConfirmTransaction(
-        connection,
-        transaction,
-        [from],
-      );
+      const signature = await sendAndConfirmTransaction(connection, transaction, [from]);
       return signature;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

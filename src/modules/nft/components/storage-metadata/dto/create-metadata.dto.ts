@@ -16,8 +16,7 @@ export class CreateMetadataDto {
     title: 'private_key',
     type: String,
     description: 'YOUR_WALLET_PRIVATE_KEY',
-    example:
-      '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
+    example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
   })
   @IsNotEmpty()
   @IsString()
@@ -27,8 +26,7 @@ export class CreateMetadataDto {
     title: 'image',
     type: String,
     description: 'NFT image URL',
-    example:
-      'https://ipfs.io/ipfs/bafkreigx7c3s267vty55xutwjkdmllugvwu2mhoowlcvx2nnhjl6k5kjaq',
+    example: 'https://ipfs.io/ipfs/bafkreigx7c3s267vty55xutwjkdmllugvwu2mhoowlcvx2nnhjl6k5kjaq',
   })
   @IsNotEmpty()
   @IsString()

@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ObjectId } from 'mongoose';
@@ -20,17 +13,11 @@ interface IGetUserAuthInfoRequest extends Request {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  public constructor(
-    public readonly reflector: Reflector,
-    public readonly authService: AuthService,
-  ) { }
+  public constructor(public readonly reflector: Reflector, public readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> | never {
     try {
-      const isPublic = this.reflector.get<boolean>(
-        'isPublic',
-        context.getHandler(),
-      );
+      const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());
 
       if (isPublic) {
         return true;
@@ -51,10 +38,7 @@ export class AuthGuard implements CanActivate {
       req.apiKey = userData.api_key;
       return true;
     } catch (e) {
-      throw new HttpException(
-        'You are not authorized!',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException('You are not authorized!', HttpStatus.UNAUTHORIZED);
     }
   }
 }

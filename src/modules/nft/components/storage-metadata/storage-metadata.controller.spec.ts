@@ -9,9 +9,7 @@ describe('StorageController', () => {
       controllers: [StorageMetadataController],
     }).compile();
 
-    controller = module.get<StorageMetadataController>(
-      StorageMetadataController,
-    );
+    controller = module.get<StorageMetadataController>(StorageMetadataController);
   });
 
   it('should be defined', () => {

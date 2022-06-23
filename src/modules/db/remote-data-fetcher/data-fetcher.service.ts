@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { Connection } from '@metaplex/js';
-import {
-  Metadata,
-  MetadataData,
-} from '@metaplex-foundation/mpl-token-metadata';
+import { Metadata, MetadataData } from '@metaplex-foundation/mpl-token-metadata';
 import { HttpService } from '@nestjs/axios';
 import { FetchNftDto, FetchAllNftDto, NftData } from './dto/data-fetcher.dto';
 
@@ -16,10 +13,7 @@ export class RemoteDataFetcherService {
       const { network, walletAddress } = fetchAllNftDto;
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
       if (!walletAddress) {
-        throw new HttpException(
-          'Please provide any public or private key',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('Please provide any public or private key', HttpStatus.BAD_REQUEST);
       }
       const nfts = await Metadata.findDataByOwner(connection, walletAddress);
       return nfts;
@@ -28,9 +22,7 @@ export class RemoteDataFetcherService {
     }
   }
 
-  async fetchAllNftsMetadata(
-    fetchAllNftDto: FetchAllNftDto,
-  ): Promise<NftData[]> {
+  async fetchAllNftsMetadata(fetchAllNftDto: FetchAllNftDto): Promise<NftData[]> {
     const onChainData = await this.fetchAllNfts(fetchAllNftDto);
     const result: NftData[] = [];
 
@@ -47,10 +39,7 @@ export class RemoteDataFetcherService {
       const { network, tokenAddress } = fetchNftDto;
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
       if (!tokenAddress) {
-        throw new HttpException(
-          'Please provide any public or private key',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('Please provide any public or private key', HttpStatus.BAD_REQUEST);
       }
       const largestAcc = await connection.getTokenLargestAccounts(new PublicKey(tokenAddress));
       const ownerInfo = <any>await connection.getParsedAccountInfo(largestAcc?.value[0]?.address);
@@ -66,10 +55,7 @@ export class RemoteDataFetcherService {
       const { network, tokenAddress } = fetchNftDto;
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
       if (!tokenAddress) {
-        throw new HttpException(
-          'Please provide any public or private key',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('Please provide any public or private key', HttpStatus.BAD_REQUEST);
       }
       const pda = await Metadata.getPDA(new PublicKey(tokenAddress));
       const metadata = await Metadata.load(connection, pda);
@@ -91,10 +77,7 @@ export class RemoteDataFetcherService {
   private async getOffChainMetadata(uri: string): Promise<any> {
     const uriRes = await this.httpService.get(uri).toPromise();
     if (uriRes.status != 200) {
-      throw new HttpException(
-        'Incorrect URI path',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException('Incorrect URI path', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return uriRes;
   }

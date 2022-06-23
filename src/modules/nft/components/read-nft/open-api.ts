@@ -135,10 +135,7 @@ const ReadAllResponse = {
 };
 
 export function ReadAllOpenApi() {
-  return applyDecorators(
-    ApiOperation({ summary: 'Read all NFT' }),
-    ApiOkResponse(ReadAllResponse),
-  );
+  return applyDecorators(ApiOperation({ summary: 'Read all NFT' }), ApiOkResponse(ReadAllResponse));
 }
 
 export function ReadOpenApi() {
@@ -154,8 +151,7 @@ export function ReadOpenApi() {
             name: 'sample.jpg',
             description: 'Kuch bhi',
             symbol: 'NAT',
-            image:
-              'https://ipfs.io/ipfs/bafkreig63wh7rweyww7zidq6trgp6epljkdbcqmazmdoengosdj5pypv7y',
+            image: 'https://ipfs.io/ipfs/bafkreig63wh7rweyww7zidq6trgp6epljkdbcqmazmdoengosdj5pypv7y',
             attributes: {},
           },
         },

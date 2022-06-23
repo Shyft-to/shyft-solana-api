@@ -19,5 +19,5 @@ export class MintNftDto {
   readonly max_supply: number;
 
   @IsNotEmpty()
-  readonly userId: ObjectId
+  readonly userId: ObjectId;
 }

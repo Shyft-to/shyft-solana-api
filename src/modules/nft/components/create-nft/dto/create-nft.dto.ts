@@ -17,8 +17,7 @@ export class CreateNftDto {
     title: 'private_key',
     type: String,
     description: 'YOUR_WALLET_PRIVATE_KEY',
-    example:
-      '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
+    example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
   })
   @IsNotEmpty()
   @IsString()
@@ -56,7 +55,7 @@ export class CreateNftDto {
 
   @ApiProperty({
     title: 'attributes',
-    type: String,
+    type: Object,
     description: 'NFT attributes',
     example: [{ trait_type: 'edification', value: '100' }],
   })

@@ -6,25 +6,16 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NftReadEvent, NftReadInWalletEvent } from '../db-sync/events';
 import { RemoteDataFetcherService } from '../remote-data-fetcher/data-fetcher.service';
 import { NftInfoAccessor } from '../../../../dal/nft-repo/nft-info.accessor';
-import {
-  FetchAllNftDto,
-  FetchNftDto,
-} from '../remote-data-fetcher/dto/data-fetcher.dto';
+import { FetchAllNftDto, FetchNftDto } from '../remote-data-fetcher/dto/data-fetcher.dto';
 
 @Injectable()
 export class ReadNftService {
-  constructor(
-    private remoteDataFetcher: RemoteDataFetcherService,
-    private nftInfoAccessor: NftInfoAccessor,
-    private eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private remoteDataFetcher: RemoteDataFetcherService, private nftInfoAccessor: NftInfoAccessor, private eventEmitter: EventEmitter2) {}
   async readAllNfts(readAllNftDto: ReadAllNftDto): Promise<any> {
     try {
       const { network, address } = readAllNftDto;
       const fetchAllNft = new FetchAllNftDto(network, address);
-      const nftsmetadata = await this.remoteDataFetcher.fetchAllNfts(
-        fetchAllNft,
-      );
+      const nftsmetadata = await this.remoteDataFetcher.fetchAllNfts(fetchAllNft);
 
       const nftReadInWalletEvent = new NftReadInWalletEvent(address, network);
       this.eventEmitter.emit('all.nfts.read', nftReadInWalletEvent);
@@ -39,9 +30,7 @@ export class ReadNftService {
     try {
       const { network, token_address } = readNftDto;
       const fetchNft = new FetchNftDto(network, token_address);
-      const dbNftInfo = await this.nftInfoAccessor.readNft(
-        readNftDto.token_address,
-      );
+      const dbNftInfo = await this.nftInfoAccessor.readNft(readNftDto.token_address);
       let nftMeta = {};
       if (dbNftInfo) {
         nftMeta = {

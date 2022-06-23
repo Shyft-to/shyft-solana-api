@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-  Version,
-} from '@nestjs/common';
+import { Body, Controller, Post, UploadedFile, UseInterceptors, Version } from '@nestjs/common';
 import { ApiSecurity } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Blob } from 'nft.storage';
@@ -16,18 +9,14 @@ import { StorageMetadataService } from './storage-metadata.service';
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller()
 export class StorageMetadataController {
-  constructor(
-    private readonly storageMetadataService: StorageMetadataService,
-  ) {}
+  constructor(private readonly storageMetadataService: StorageMetadataService) {}
 
   @StorageUploadOpenApi()
   @Post('storage/upload')
   @Version('1')
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file: Express.Multer.File): Promise<any> {
-    const uploadResponse = await this.storageMetadataService.uploadToIPFS(
-      new Blob([file.buffer], { type: file.mimetype }),
-    );
+    const uploadResponse = await this.storageMetadataService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
     return {
       success: true,
       message: 'File uploaded successfully',
@@ -38,12 +27,8 @@ export class StorageMetadataController {
   @MetadataCreateOpenApi()
   @Post('metadata/create')
   @Version('1')
-  async createMetadata(
-    @Body() createMetadataDto: CreateMetadataDto,
-  ): Promise<any> {
-    const metadata = await this.storageMetadataService.prepareMetaData(
-      createMetadataDto,
-    );
+  async createMetadata(@Body() createMetadataDto: CreateMetadataDto): Promise<any> {
+    const metadata = await this.storageMetadataService.prepareMetaData(createMetadataDto);
     return {
       success: true,
       message: 'Metadata created successfully',

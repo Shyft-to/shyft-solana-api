@@ -2,11 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { actions, Connection, NodeWallet } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import {
-  Token,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
+import { Token, ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 import { BurnNftDto } from './dto/burn-nft.dto';
 import { AccountService } from 'src/modules/account/account.service';
@@ -14,10 +10,7 @@ import { NftDeleteEvent } from '../db-sync/events';
 
 @Injectable()
 export class BurnNftService {
-  constructor(
-    private accountService: AccountService,
-    private eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private accountService: AccountService, private eventEmitter: EventEmitter2) {}
   async burnNft(burnNftDto: BurnNftDto): Promise<any> {
     try {
       const { network, private_key, token_address, close, amount } = burnNftDto;

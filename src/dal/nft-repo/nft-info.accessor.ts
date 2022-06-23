@@ -5,9 +5,7 @@ import { NftInfo, NftInfoDocument } from './nft-info.schema';
 
 @Injectable()
 export class NftInfoAccessor {
-  constructor(
-    @InjectModel(NftInfo.name) public NftInfoDataModel: Model<NftInfoDocument>,
-  ) {}
+  constructor(@InjectModel(NftInfo.name) public NftInfoDataModel: Model<NftInfoDocument>) {}
 
   public async insert(data: NftInfo): Promise<any> {
     const result = await this.NftInfoDataModel.create(data);

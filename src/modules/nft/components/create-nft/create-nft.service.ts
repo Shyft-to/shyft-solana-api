@@ -8,10 +8,8 @@ import { NftCreationEvent } from '../db-sync/events';
 
 @Injectable()
 export class CreateNftService {
-  constructor(
-    private accountService: AccountService,
-    private eventEmitter: EventEmitter2,
-  ) { }
+  constructor(private accountService: AccountService, private eventEmitter: EventEmitter2) {}
+
   async mintNft(mintNftDto: MintNftDto): Promise<any> {
     const { metadata_uri, max_supply, network, private_key } = mintNftDto;
     if (!metadata_uri) {
@@ -27,11 +25,7 @@ export class CreateNftService {
       maxSupply: max_supply || 1,
     });
 
-    const nftCreationEvent = new NftCreationEvent(
-      nft.mint.toString(),
-      mintNftDto.network,
-      mintNftDto.userId,
-    );
+    const nftCreationEvent = new NftCreationEvent(nft.mint.toString(), mintNftDto.network, mintNftDto.userId);
     this.eventEmitter.emit('nft.created', nftCreationEvent);
 
     return nft;
