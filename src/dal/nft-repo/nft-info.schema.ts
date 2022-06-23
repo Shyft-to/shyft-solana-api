@@ -15,7 +15,7 @@ interface creator {
 
 @Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 export class NftInfo {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId })
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, default: null })
   api_key_id: ObjectId;
 
   @Prop({ required: true })
@@ -27,7 +27,7 @@ export class NftInfo {
   @Prop({ required: true })
   mint: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: '' })
   owner: string;
 
   @Prop({ required: true })
@@ -48,8 +48,8 @@ export class NftInfo {
   @Prop({ required: false })
   external_url: string;
 
-  @Prop({ required: false })
-  seller_fee_basis_points: number;
+  @Prop({ required: false, min: 0, max: 100, default: 0 })
+  royalty: number;
 
   @Prop({ required: true })
   image_uri: string;
@@ -57,10 +57,10 @@ export class NftInfo {
   @Prop({ required: true })
   metadata_uri: string;
 
-  @Prop({ required: false, type: Object })
+  @Prop({ required: false, type: Object, default: {} })
   attributes: object;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   creators: creator[];
 }
 
