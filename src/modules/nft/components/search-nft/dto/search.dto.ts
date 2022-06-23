@@ -1,11 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 
+export class searchAttribute {
+	readonly name: string;
+	readonly operator: string;
+	readonly value: string | number;
+}
+
 export class SearchNftDto {
 	@IsNotEmpty()
 	@ApiProperty({
 		title: 'attributes',
-		type: String,
+		type: searchAttribute,
 		description: 'searchable NFT attributes',
 		example: [
 			{ name: 'edification', value: 100, operator: ">=" },
@@ -13,9 +19,5 @@ export class SearchNftDto {
 			{ name: 'energy', value: 100, operator: "==" },
 		],
 	})
-	readonly attributes: {
-		name: string;
-		operator: string;
-		value: string | number;
-	}[];
+	readonly attributes: searchAttribute[];
 }
