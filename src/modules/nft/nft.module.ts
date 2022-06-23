@@ -18,6 +18,8 @@ import { RemoteDataFetcherService } from './components/remote-data-fetcher/data-
 import { NftOperationsEventListener } from './components/db-sync/service';
 import { NftInfoAccessor } from 'src/dal/nft-repo/nft-info.accessor';
 import { NftInfo, NftInfoSchema } from 'src/dal/nft-repo/nft-info.schema';
+import { SearchNftcontroller } from './components/search-nft/search-nft.controller';
+import { SearchNftService } from './components/search-nft/search-nft.service';
 
 @Module({
   controllers: [
@@ -26,6 +28,7 @@ import { NftInfo, NftInfoSchema } from 'src/dal/nft-repo/nft-info.schema';
     BurnNftController,
     UpdateNftController,
     StorageMetadataController,
+    SearchNftcontroller
   ],
   imports: [
     MongooseModule.forFeature([
@@ -45,6 +48,7 @@ import { NftInfo, NftInfoSchema } from 'src/dal/nft-repo/nft-info.schema';
     RemoteDataFetcherService,
     NftOperationsEventListener,
     NftInfoAccessor,
+    SearchNftService
   ],
 })
-export class NftModule {}
+export class NftModule { }

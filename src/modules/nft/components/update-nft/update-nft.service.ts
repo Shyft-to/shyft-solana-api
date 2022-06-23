@@ -20,10 +20,10 @@ export class UpdateNftService {
     try {
       const {
         network,
-        tokenAddress,
+        token_address,
         name,
         symbol,
-        updateAuthority,
+        update_authority,
         seller_fee_basis_points,
         private_key,
         share,
@@ -38,7 +38,7 @@ export class UpdateNftService {
       const wallet = new NodeWallet(keypair);
 
       //get token's PDA (metadata address)
-      const pda = await Metadata.getPDA(tokenAddress);
+      const pda = await Metadata.getPDA(token_address);
       const creators = new Array<Creator>(new programs.metadata.Creator({
         address: wallet.publicKey.toString(),
         verified: true,
@@ -49,7 +49,7 @@ export class UpdateNftService {
         feePayer: wallet.publicKey
       }, {
         metadata: pda,
-        updateAuthority: new PublicKey(updateAuthority),
+        updateAuthority: new PublicKey(update_authority),
         metadataData: new programs.metadata.DataV2({
           name: name,
           symbol: symbol,
@@ -66,7 +66,7 @@ export class UpdateNftService {
       const signedTransaction = await wallet.signTransaction(res)
       const result = await connection.sendRawTransaction(signedTransaction.serialize());
 
-      const nftUpdatedEvent = new NftUpdateEvent(tokenAddress, network)
+      const nftUpdatedEvent = new NftUpdateEvent(token_address, network)
       this.eventEmitter.emit('nft.updated', nftUpdatedEvent)
 
       return { txId: result };

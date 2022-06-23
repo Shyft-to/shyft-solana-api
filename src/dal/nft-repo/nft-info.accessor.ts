@@ -27,6 +27,16 @@ export class NftInfoAccessor {
     return result;
   }
 
+  public async find(filter: Object): Promise<any> {
+    try {
+      const result = await this.NftInfoDataModel.find(filter)
+      return result
+    } catch (err) {
+      console.log(err)
+    }
+    return []
+  }
+
   public async updateManyNft(nfts: NftInfo[]): Promise<any> {
     try {
       await Promise.all(

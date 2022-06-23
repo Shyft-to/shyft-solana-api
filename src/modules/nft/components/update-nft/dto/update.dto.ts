@@ -25,24 +25,24 @@ export class UpdateNftDto {
   readonly private_key: string;
 
   @ApiProperty({
-    title: 'tokenAddress',
+    title: 'token_address',
     type: String,
     description: 'YOUR_NFT_TOKEN_ADDRESS',
     example: 'HJ32KZye152eCFQYrKDcoyyq77dVDpa8SXE6v8T1HkBP',
   })
   @IsNotEmpty()
   @IsString()
-  readonly tokenAddress: string;
+  readonly token_address: string;
 
   @ApiProperty({
-    title: 'updateAuthority',
+    title: 'update_authority',
     type: String,
     description: 'WALLET_ADDRESS',
     example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
   })
   @IsNotEmpty()
   @IsString()
-  readonly updateAuthority: string;
+  readonly update_authority: string;
 
   @ApiProperty({
     title: 'name',
