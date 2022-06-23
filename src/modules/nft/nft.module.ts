@@ -13,10 +13,11 @@ import { User, UserSchema } from 'src/dal/user.schema';
 import { StorageMetadataController } from './components/storage-metadata/storage-metadata.controller';
 import { StorageMetadataService } from './components/storage-metadata/storage-metadata.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { DbModule } from '../db/db.module';
 
 @Module({
   controllers: [CreateNftController, ReadNftController, BurnNftController, UpdateNftController, StorageMetadataController],
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), EventEmitterModule.forRoot()],
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), EventEmitterModule.forRoot(), DbModule],
   providers: [CreateNftService, AccountService, ReadNftService, BurnNftService, UpdateNftService, StorageMetadataService],
 })
 export class NftModule {}
