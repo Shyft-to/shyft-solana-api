@@ -58,7 +58,7 @@ export class NftInfo {
   metadata_uri: string;
 
   @Prop({ required: false, type: Object, default: {} })
-  attributes: object;
+  attributes: { [k: string]: string | number };
 
   @Prop({ required: false })
   creators: creator[];

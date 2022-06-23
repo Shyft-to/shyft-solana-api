@@ -31,7 +31,7 @@ export class CreateNftController {
       symbol: createNftDto.symbol,
       attributes: createNftDto.attributes,
       share: createNftDto.share,
-      seller_fee_basis_points: createNftDto.seller_fee_basis_points,
+      seller_fee_basis_points: createNftDto.royalty * 100, //500 = 5%
       external_url: createNftDto.externalUrl,
     });
 

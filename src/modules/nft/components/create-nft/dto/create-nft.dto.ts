@@ -69,7 +69,7 @@ export class CreateNftDto {
   @ApiProperty({
     title: 'share',
     type: String,
-    description: 'NFT share',
+    description: 'NFT share on primary sale, between 0 - 100',
     example: '100',
   })
   @IsNotEmpty()
@@ -81,7 +81,7 @@ export class CreateNftDto {
     title: 'external_url',
     type: String,
     description: 'NFT external URL',
-    example: 'https://www.example.com',
+    example: 'https://shyft.to',
   })
   @IsOptional()
   @IsString()
@@ -99,15 +99,15 @@ export class CreateNftDto {
   readonly max_supply: number;
 
   @ApiProperty({
-    title: 'seller_fee_basis_points',
+    title: 'Royalty',
     type: String,
-    description: 'NFT seller fee basis points',
-    example: '100',
+    description: 'NFT royalty on secondary sales, between 0 - 100',
+    example: '5',
   })
   @IsNotEmpty()
   @IsNumber()
   @Transform(({ value }) => parseInt(value), { toClassOnly: true })
-  readonly seller_fee_basis_points: number;
+  readonly royalty: number;
 
   @ApiProperty({
     name: 'file',

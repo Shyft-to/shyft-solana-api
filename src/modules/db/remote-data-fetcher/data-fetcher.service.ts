@@ -22,13 +22,14 @@ export class RemoteDataFetcherService {
     }
   }
 
-  async fetchAllNftsMetadata(fetchAllNftDto: FetchAllNftDto): Promise<NftData[]> {
+  async fetchAllNftDetails(fetchAllNftDto: FetchAllNftDto): Promise<NftData[]> {
     const onChainData = await this.fetchAllNfts(fetchAllNftDto);
     const result: NftData[] = [];
-
     for (const oncd of onChainData) {
       const ofcd = await this.getOffChainMetadata(oncd.data.uri);
-      result.push(new NftData(oncd, ofcd.data));
+      //No need to fetch owner, we have the wallet Id
+      const owner = fetchAllNftDto.walletAddress;
+      result.push(new NftData(oncd, ofcd.data, owner));
     }
 
     return result;
@@ -43,7 +44,24 @@ export class RemoteDataFetcherService {
       }
       const largestAcc = await connection.getTokenLargestAccounts(new PublicKey(tokenAddress));
       const ownerInfo = <any>await connection.getParsedAccountInfo(largestAcc?.value[0]?.address);
+
       return ownerInfo.value?.data?.parsed?.info?.owner;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  //Fetches Nft 's onchain and off chain metadata + owner
+  async fetchNftDetails(fetchNftDto: FetchNftDto): Promise<NftData> {
+    try {
+      if (!fetchNftDto.tokenAddress) {
+        throw new HttpException('Please provide any public or private key', HttpStatus.BAD_REQUEST);
+      }
+      const nftData = await this.fetchNft(fetchNftDto);
+      nftData.owner = await this.fetchOwner(fetchNftDto);
+
+      return nftData;
     } catch (error) {
       console.log(error);
       throw new HttpException(error.message, error.status);

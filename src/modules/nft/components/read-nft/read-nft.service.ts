@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ReadNftDto } from './dto/read-nft.dto';
 import { ReadAllNftDto } from './dto/read-all-nft.dto';
-import { nftHelper } from '../../nft.helper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NftReadEvent, NftReadInWalletEvent } from '../../../db/db-sync/db.events';
 import { RemoteDataFetcherService } from '../../../db/remote-data-fetcher/data-fetcher.service';
@@ -11,45 +10,51 @@ import { FetchAllNftDto, FetchNftDto } from '../../../db/remote-data-fetcher/dto
 @Injectable()
 export class ReadNftService {
   constructor(private remoteDataFetcher: RemoteDataFetcherService, private nftInfoAccessor: NftInfoAccessor, private eventEmitter: EventEmitter2) {}
+
   async readAllNfts(readAllNftDto: ReadAllNftDto): Promise<any> {
     try {
       const { network, address } = readAllNftDto;
       const fetchAllNft = new FetchAllNftDto(network, address);
-      const nftsmetadata = await this.remoteDataFetcher.fetchAllNfts(fetchAllNft);
+      const nftdata = await this.remoteDataFetcher.fetchAllNftDetails(fetchAllNft);
+      const nftDbResponse = nftdata.map((nft) => nft.getNftDbResponse());
 
-      const nftReadInWalletEvent = new NftReadInWalletEvent(address, network);
-      this.eventEmitter.emit('all.nfts.read', nftReadInWalletEvent);
+      //Right now its being fetched from chain only
+      // const nftReadInWalletEvent = new NftReadInWalletEvent(address, network);
+      // this.eventEmitter.emit('all.nfts.read', nftReadInWalletEvent);
 
-      return nftsmetadata;
+      return { count: nftDbResponse.length, nfts: nftDbResponse };
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
-  async readNft(readNftDto: ReadNftDto): Promise<any> {
+  async readNft(readNftDto: ReadNftDto): Promise<unknown> {
     try {
       const { network, token_address } = readNftDto;
       const fetchNft = new FetchNftDto(network, token_address);
       const dbNftInfo = await this.nftInfoAccessor.readNft(readNftDto.token_address);
-      let nftMeta = {};
+      let nftDbResponse = {};
       if (dbNftInfo) {
-        nftMeta = {
+        nftDbResponse = {
           name: dbNftInfo.name,
           description: dbNftInfo.description,
           symbol: dbNftInfo.symbol,
-          image: dbNftInfo.image_uri,
+          image_uri: dbNftInfo.image_uri,
           attributes: dbNftInfo.attributes,
+          royalty: dbNftInfo.royalty,
+          mint: dbNftInfo.mint,
+          owner: dbNftInfo.owner,
         };
       } else {
-        const metadata = await this.remoteDataFetcher.fetchNft(fetchNft);
-        nftMeta = nftHelper.parseMetadata(metadata.offChainMetadata);
+        //not available in DB, fetch from blockchain
+        nftDbResponse = (await this.remoteDataFetcher.fetchNftDetails(fetchNft)).getNftDbResponse();
       }
 
-      //Trigger read event, to update DB
+      //Trigger read event, to update DB (to-do:can be skipped)
       const nftReadEvent = new NftReadEvent(token_address, network);
       this.eventEmitter.emit('nft.read', nftReadEvent);
 
-      return nftMeta;
+      return nftDbResponse;
     } catch (error) {
       console.log(error);
       throw new HttpException(error.message, error.status);

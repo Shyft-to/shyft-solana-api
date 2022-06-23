@@ -34,7 +34,7 @@ export class DbSyncService {
   @OnEvent('all.nfts.read', { async: true })
   async handleAllNftReadEvent(event: NftReadInWalletEvent): Promise<any> {
     try {
-      const nfts = await this.remoteDataFetcher.fetchAllNftsMetadata(new FetchAllNftDto(event.network, event.walletAddress));
+      const nfts = await this.remoteDataFetcher.fetchAllNftDetails(new FetchAllNftDto(event.network, event.walletAddress));
       const nftInfos: NftInfo[] = nfts.map((nft) => {
         const info = nft.getNftInfoDto();
         info.chain = event.network;
@@ -77,10 +77,9 @@ export class DbSyncService {
   }
 
   private async prepareNftDbDto(event: NftReadEvent) {
-    const metadata = await this.remoteDataFetcher.fetchNft(new FetchNftDto(event.network, event.tokenAddress));
-    const nftDbDto = metadata.getNftInfoDto();
+    const nftData = await this.remoteDataFetcher.fetchNftDetails(new FetchNftDto(event.network, event.tokenAddress));
+    const nftDbDto = nftData.getNftInfoDto();
     nftDbDto.chain = event.network;
-    nftDbDto.owner = (await this.remoteDataFetcher.fetchOwner(new FetchNftDto(event.network, event.tokenAddress))) ?? '';
 
     return nftDbDto;
   }
