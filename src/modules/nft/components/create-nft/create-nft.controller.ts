@@ -37,9 +37,9 @@ export class CreateNftController {
 
     const mintNftRequest = {
       network: createNftDto.network,
-      private_key: createNftDto.private_key,
-      metadata_uri: uri,
-      max_supply: createNftDto.max_supply,
+      privateKey: createNftDto.private_key,
+      metadataUri: uri,
+      maxSupply: createNftDto.max_supply,
       userId: request.id,
     };
 

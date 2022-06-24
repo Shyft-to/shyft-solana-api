@@ -2,10 +2,10 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { ReadNftDto } from './dto/read-nft.dto';
 import { ReadAllNftDto } from './dto/read-all-nft.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NftReadEvent, NftReadInWalletEvent } from '../../../db/db-sync/db.events';
+import { NftReadEvent } from '../../../db/db-sync/db.events';
 import { RemoteDataFetcherService } from '../../../db/remote-data-fetcher/data-fetcher.service';
 import { NftInfoAccessor } from '../../../../dal/nft-repo/nft-info.accessor';
-import { FetchAllNftDto, FetchNftDto } from '../../../db/remote-data-fetcher/dto/data-fetcher.dto';
+import { FetchAllNftDto, FetchNftDto, NftDbResponse } from '../../../db/remote-data-fetcher/dto/data-fetcher.dto';
 
 @Injectable()
 export class ReadNftService {
@@ -28,14 +28,18 @@ export class ReadNftService {
     }
   }
 
-  async readNft(readNftDto: ReadNftDto): Promise<unknown> {
+  async readNft(readNftDto: ReadNftDto): Promise<NftDbResponse> {
     try {
       const { network, token_address } = readNftDto;
       const fetchNft = new FetchNftDto(network, token_address);
       const dbNftInfo = await this.nftInfoAccessor.readNft(readNftDto.token_address);
-      let nftDbResponse = {};
+
+      //Trigger read event, to update DB (to-do:can be skipped)
+      const nftReadEvent = new NftReadEvent(token_address, network);
+      this.eventEmitter.emit('nft.read', nftReadEvent);
+
       if (dbNftInfo) {
-        nftDbResponse = {
+        return {
           name: dbNftInfo.name,
           description: dbNftInfo.description,
           symbol: dbNftInfo.symbol,
@@ -47,14 +51,8 @@ export class ReadNftService {
         };
       } else {
         //not available in DB, fetch from blockchain
-        nftDbResponse = (await this.remoteDataFetcher.fetchNftDetails(fetchNft)).getNftDbResponse();
+        return (await this.remoteDataFetcher.fetchNftDetails(fetchNft)).getNftDbResponse();
       }
-
-      //Trigger read event, to update DB (to-do:can be skipped)
-      const nftReadEvent = new NftReadEvent(token_address, network);
-      this.eventEmitter.emit('nft.read', nftReadEvent);
-
-      return nftDbResponse;
     } catch (error) {
       console.log(error);
       throw new HttpException(error.message, error.status);
