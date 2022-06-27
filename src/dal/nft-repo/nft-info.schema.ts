@@ -18,8 +18,11 @@ export class NftInfo {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, default: null })
   api_key_id: ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 'solana' })
   chain: string;
+
+  @Prop({ required: true, default: 'devnet' })
+  network: string;
 
   @Prop({ required: true })
   update_authority: string;
@@ -50,6 +53,12 @@ export class NftInfo {
 
   @Prop({ required: false, min: 0, max: 100, default: 0 })
   royalty: number;
+
+  @Prop({ required: false })
+  max_supply: number;
+
+  @Prop({ required: false })
+  supply: number;
 
   @Prop({ required: true })
   image_uri: string;
