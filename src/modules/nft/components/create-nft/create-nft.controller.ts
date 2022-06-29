@@ -14,6 +14,7 @@ import { CreateNftService } from './create-nft.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { StorageMetadataService } from '../storage-metadata/storage-metadata.service';
 import { CreateOpenApi } from './open-api';
+import { Request } from 'express';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
@@ -31,12 +32,13 @@ export class CreateNftController {
   async createNft(
     @UploadedFile() file: Express.Multer.File,
     @Body() createNftDto: CreateNftDto,
-    @Req() request: any
+    @Req() request: any,
   ): Promise<any> {
     const uploadImage = await this.storageService.uploadToIPFS(
       new Blob([file.buffer], { type: file.mimetype }),
     );
     const image = uploadImage.uri;
+
     const { uri } = await this.storageService.prepareMetaData({
       network: createNftDto.network,
       private_key: createNftDto.private_key,
@@ -46,16 +48,18 @@ export class CreateNftController {
       symbol: createNftDto.symbol,
       attributes: createNftDto.attributes,
       share: createNftDto.share,
-      seller_fee_basis_points: createNftDto.seller_fee_basis_points,
+      seller_fee_basis_points: createNftDto.royalty * 100, //500 = 5%
       external_url: createNftDto.external_url,
     });
+
     const mintNftRequest = {
       network: createNftDto.network,
-      private_key: createNftDto.private_key,
-      metadata_uri: uri,
-      max_supply: createNftDto.max_supply,
+      privateKey: createNftDto.private_key,
+      metadataUri: uri,
+      maxSupply: createNftDto.max_supply,
       userId: request.id,
     };
+
     const nft = await this.createNftService.mintNft(mintNftRequest);
     return {
       success: true,

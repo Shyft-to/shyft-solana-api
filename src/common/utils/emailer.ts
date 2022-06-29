@@ -5,13 +5,7 @@ import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses';
 import { configuration } from '../configs/config';
 import Handlebars from 'handlebars';
 
-const {
-  awsAccessKeyId,
-  awsSecretAccessKey,
-  awsRegion,
-  sesApiVersion,
-  sesEmailId,
-} = configuration();
+const { awsAccessKeyId, awsSecretAccessKey, awsRegion, sesApiVersion, sesEmailId } = configuration();
 
 // Load the AWS SDK for Node.js
 // import AWS from 'aws-sdk';
@@ -36,17 +30,10 @@ let templateHtml: string;
 let subject: string;
 
 export class Emailer {
-  public async sendEmail(
-    destinationEmailAddess: string,
-    templateName: string,
-    templateData: object,
-  ) {
+  public async sendEmail(destinationEmailAddess: string, templateName: string, templateData: object) {
     switch (templateName) {
       case 'ApiKeyTemplate':
-        templateHtml = readFileSync(
-          resolve(__dirname, '../email-templates/api-key-template.hbs'),
-          'utf8',
-        );
+        templateHtml = readFileSync(resolve(__dirname, '../email-templates/api-key-template.hbs'), 'utf8');
         subject = 'Your Shyft API Key';
         break;
       /**

@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Post,
+  Put,
   UploadedFile,
   UseInterceptors,
   Version,
@@ -24,7 +24,7 @@ export class UpdateNftController {
   ) { }
 
   @UpdateOpenApi()
-  @Post('update')
+  @Put('update')
   @Version('1')
   @UseInterceptors(FileInterceptor('file'))
   async update(

@@ -14,6 +14,7 @@ import { AuthService } from './modules/auth/auth.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
+  app.setGlobalPrefix('sol'); // To run app at `/sol` prefix
   app.enableVersioning({
     type: VersioningType.URI,
   });
@@ -31,7 +32,7 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/explore', app, document);
+  SwaggerModule.setup('sol/api/explore', app, document); // openAPI docs route
 
   const reflector = app.get(Reflector);
   const authService = app.get(AuthService);

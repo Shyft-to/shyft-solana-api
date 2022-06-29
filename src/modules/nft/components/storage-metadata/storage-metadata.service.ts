@@ -23,17 +23,7 @@ export class StorageMetadataService {
   }
 
   async prepareMetaData(createMetadataDto: CreateMetadataDto): Promise<any> {
-    const {
-      private_key,
-      image,
-      name,
-      description,
-      symbol,
-      attributes,
-      share,
-      seller_fee_basis_points,
-      external_url,
-    } = createMetadataDto;
+    const { private_key, image, name, description, symbol, attributes, share, seller_fee_basis_points, external_url } = createMetadataDto;
     const accountInfo = await this.accountService.getKeypair(private_key);
     const address = accountInfo.publicKey.toBase58();
 
@@ -41,9 +31,7 @@ export class StorageMetadataService {
       name,
       symbol,
       description,
-      seller_fee_basis_points: seller_fee_basis_points
-        ? seller_fee_basis_points
-        : 0,
+      seller_fee_basis_points: seller_fee_basis_points ? seller_fee_basis_points : 0,
       external_url: external_url ? external_url : '',
       image,
       attributes,
@@ -52,9 +40,7 @@ export class StorageMetadataService {
       },
     });
 
-    const uploadResponse = await this.uploadToIPFS(
-      new Blob([metadata], { type: 'application/json' }),
-    );
+    const uploadResponse = await this.uploadToIPFS(new Blob([metadata], { type: 'application/json' }));
     return uploadResponse;
   }
 }

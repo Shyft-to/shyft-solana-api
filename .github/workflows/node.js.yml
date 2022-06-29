@@ -28,13 +28,12 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ./node_modules
-        key: modules-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+        key: modules-${{ hashFiles('package-lock.json') }}
+        restore-keys: npm-
 
     - name: Install dependencies
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn install --pure-lockfile
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci --ignore-scripts
 
     - name: Build
       env:
@@ -47,5 +46,5 @@ jobs:
         MONGO_URI: ${{ secrets.MONGO_URI }}
       run: |
         echo Deployed into this PATH $PWD
-        yarn build
+        npm run build
         bash deploy.sh

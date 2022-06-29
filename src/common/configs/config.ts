@@ -5,5 +5,5 @@ export const configuration = () => ({
   awsRegion: process.env.AWS_REGION,
   sesApiVersion: process.env.SES_API_VERSION,
   sesEmailId: process.env.SES_EMAIL_ID,
-  mongoURI: process.env.MONGODB_URI,
+  mongoURI: process.env.MONGO_URI,
 });

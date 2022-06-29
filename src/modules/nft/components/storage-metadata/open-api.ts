@@ -1,10 +1,4 @@
-import {
-  ApiOperation,
-  ApiConsumes,
-  ApiCreatedResponse,
-  ApiTags,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiConsumes, ApiCreatedResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 
 import { applyDecorators } from '@nestjs/common';
 
