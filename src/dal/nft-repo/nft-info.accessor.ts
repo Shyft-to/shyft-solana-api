@@ -25,7 +25,7 @@ export class NftInfoAccessor {
     return result;
   }
 
-  public async find(filter: Object): Promise<any> {
+  public async find(filter: Object): Promise<NftInfoDocument[]> {
     try {
       const result = await this.NftInfoDataModel.find(filter)
       return result

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ObjectId } from "mongoose";
 import { NftInfoAccessor } from "src/dal/nft-repo/nft-info.accessor";
+import { getNftDbResponseFromNftInfo } from "src/dal/nft-repo/nft-info.helper";
 
 @Injectable()
 export class SearchNftService {
@@ -20,7 +21,11 @@ export class SearchNftService {
 
 		filter["api_key_id"] = apiKeyId;
 		console.log(filter);
-		const result = await this.nftInfoAccessor.find(filter);
+		const filteredResult = await this.nftInfoAccessor.find(filter);
+		const result = filteredResult.map(r => {
+			return getNftDbResponseFromNftInfo(r);
+		})
+
 		return result;
 	}
 }

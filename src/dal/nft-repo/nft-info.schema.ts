@@ -4,6 +4,7 @@
 */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, ObjectId } from 'mongoose';
+import { NftDbResponse } from 'src/modules/db/remote-data-fetcher/dto/data-fetcher.dto';
 
 export type NftInfoDocument = NftInfo & Document;
 
