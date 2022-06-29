@@ -15,9 +15,10 @@ export class SearchNftcontroller {
 	@Get('search/attributes')
 	@Version('1')
 	async searchNft(
-		@Query() query
+		@Query() query,
+		@Req() request: any
 	): Promise<any> {
-		const result = await this.searchNftService.searchNftsByAttributes(query)
+		const result = await this.searchNftService.searchNftsByAttributes(query, request.id)
 		return {
 			success: true,
 			message: "filtered NFTs",
