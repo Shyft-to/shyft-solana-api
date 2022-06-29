@@ -9,7 +9,7 @@ import { ReadAllOpenApi, ReadOpenApi } from './open-api';
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller('nft')
 export class ReadNftController {
-  constructor(private readNftService: ReadNftService) {}
+  constructor(private readNftService: ReadNftService) { }
 
   @ReadAllOpenApi()
   @Get('read_all')

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Network } from 'src/dto/netwotk.dto';
 
 export class BurnNftDto {
@@ -39,6 +39,7 @@ export class BurnNftDto {
     example: false,
   })
   @IsBoolean()
+  @IsOptional()
   readonly close: boolean;
 
   @ApiProperty({
@@ -48,5 +49,6 @@ export class BurnNftDto {
     example: 0.001,
   })
   @IsNumber()
+  @IsOptional()
   readonly amount: number;
 }

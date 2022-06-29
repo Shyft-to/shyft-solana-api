@@ -3,6 +3,7 @@ import { Body, Controller, Get, HttpCode, Param, Post, Query, Req, Version } fro
 import { SearchNftService } from './search-nft.service';
 import { blockParams } from 'handlebars';
 import { query } from 'express';
+import { SearchAttributesOpenApi } from './open-api';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
@@ -12,6 +13,7 @@ export class SearchNftcontroller {
 		private searchNftService: SearchNftService
 	) { }
 
+	@SearchAttributesOpenApi()
 	@Get('search/attributes')
 	@Version('1')
 	async searchNft(
