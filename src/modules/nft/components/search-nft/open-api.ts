@@ -54,5 +54,5 @@ const SearchAttributesResponse = {
 };
 
 export function SearchAttributesOpenApi() {
-	return applyDecorators(ApiOperation({ summary: 'Read all NFT' }), ApiOkResponse(SearchAttributesResponse));
+	return applyDecorators(ApiOperation({ summary: 'filter NFTs by attribute values' }), ApiOkResponse(SearchAttributesResponse));
 }

@@ -9,7 +9,6 @@ export class SearchNftService {
 	async searchNftsByAttributes(query: any, apiKeyId: ObjectId): Promise<any> {
 		const filter = {}
 		for (let key in query) {
-			console.log(query[key]);
 			const k = "attributes." + key;
 			const n = parseInt(query[key])
 			if (!isNaN(n)) {
