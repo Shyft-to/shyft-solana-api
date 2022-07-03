@@ -28,13 +28,17 @@ export class DbSyncService {
 
   @OnEvent('nft.read', { async: true })
   async handleNftReadEvent(event: NftReadEvent): Promise<any> {
-    await this.syncNftData(event);
+    try {
+      await this.syncNftData(event);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @OnEvent('all.nfts.read', { async: true })
   async handleAllNftReadEvent(event: NftReadInWalletEvent): Promise<any> {
     try {
-      const nfts = await this.remoteDataFetcher.fetchAllNftDetails(new FetchAllNftDto(event.network, event.walletAddress));
+      const nfts = await this.remoteDataFetcher.fetchAllNftDetails(new FetchAllNftDto(event.network, event.walletAddress, event.updateAuthority));
       const nftInfos: NftInfo[] = nfts.map((nft) => {
         const info = nft.getNftInfoDto();
         info.chain = event.network;
@@ -43,7 +47,7 @@ export class DbSyncService {
       });
       await this.nftInfoAccessor.updateManyNft(nftInfos);
     } catch (err) {
-      throw new Error(err);
+      throw Error(err);
     }
   }
 
@@ -62,7 +66,7 @@ export class DbSyncService {
       const result = await this.nftInfoAccessor.deleteNft(event.tokenAddress);
       return result;
     } catch (err) {
-      throw new Error(err);
+      throw Error(err);
     }
   }
 
@@ -72,15 +76,19 @@ export class DbSyncService {
       const result = await this.nftInfoAccessor.updateNft(nftDbDto);
       return result;
     } catch (err) {
-      throw new Error(err);
+      throw Error(err);
     }
   }
 
   private async prepareNftDbDto(event: NftReadEvent) {
-    const nftData = await this.remoteDataFetcher.fetchNftDetails(new FetchNftDto(event.network, event.tokenAddress));
-    const nftDbDto = nftData.getNftInfoDto();
-    nftDbDto.chain = event.network;
+    try {
+      const nftData = await this.remoteDataFetcher.fetchNftDetails(new FetchNftDto(event.network, event.tokenAddress));
+      const nftDbDto = nftData.getNftInfoDto();
+      nftDbDto.chain = event.network;
 
-    return nftDbDto;
+      return nftDbDto;
+    } catch (error) {
+      throw Error(error);
+    }
   }
 }
