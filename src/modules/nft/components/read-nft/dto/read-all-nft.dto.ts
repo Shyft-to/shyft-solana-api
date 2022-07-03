@@ -23,7 +23,7 @@ export class ReadAllNftDto {
   readonly address: string;
 
   @ApiProperty({
-    title: 'update authority's address',
+    title: 'update authoritys address',
     type: String,
     description: 'Update Authority, projects own wallet address',
     example: 'BvzKvn6nUUAYtKu2pH3h5SbUkUNcRPQawg4bURBiojJx',
