@@ -66,17 +66,6 @@ export class CreateNftDto {
     value: string | number;
   }[];
 
-  @ApiProperty({
-    title: 'share',
-    type: String,
-    description: 'NFT share on primary sale, between 0 - 100',
-    example: '100',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
-  readonly share: number;
-
   @ApiPropertyOptional({
     title: 'external_url',
     type: String,
@@ -89,7 +78,7 @@ export class CreateNftDto {
 
   @ApiProperty({
     title: 'max_supply',
-    type: String,
+    type: Number,
     description: 'NFT max_supply_number',
     example: '1',
   })
@@ -100,7 +89,7 @@ export class CreateNftDto {
 
   @ApiProperty({
     title: 'Royalty',
-    type: String,
+    type: Number,
     description: 'NFT royalty on secondary sales, between 0 - 100',
     example: '5',
   })
