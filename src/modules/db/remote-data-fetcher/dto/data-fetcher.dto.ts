@@ -1,5 +1,5 @@
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { NftInfo } from 'src/dal/nft-repo/nft-info.schema';
 import { Network } from 'src/dto/netwotk.dto';
 
@@ -16,9 +16,10 @@ export interface NftDbResponse {
 }
 
 export class FetchAllNftDto {
-  constructor(network: Network, address: string) {
+  constructor(network: Network, address: string, updateAuthority: string) {
     this.network = network;
     this.walletAddress = address;
+    this.updateAuthority = updateAuthority;
   }
 
   @IsNotEmpty()
@@ -26,6 +27,10 @@ export class FetchAllNftDto {
   @IsNotEmpty()
   @IsString()
   readonly walletAddress: string;
+
+  @IsOptional()
+  @IsString()
+  readonly updateAuthority: string;
 }
 
 export class FetchNftDto {
@@ -64,7 +69,7 @@ export class NftData {
       owner: this.owner,
     };
 
-    this.offChainMetadata?.attributes.map((trait) => {
+    this.offChainMetadata?.attributes?.map((trait) => {
       nftDbResponse.attributes[trait?.trait_type] = trait?.value;
     });
 

@@ -1,8 +1,6 @@
 import { ApiTags, ApiSecurity } from '@nestjs/swagger';
-import { Body, Controller, Get, HttpCode, Param, Post, Query, Req, Version } from '@nestjs/common';
+import { Controller, Get, Query, Req, Version } from '@nestjs/common';
 import { SearchNftService } from './search-nft.service';
-import { blockParams } from 'handlebars';
-import { query } from 'express';
 import { SearchAttributesOpenApi } from './open-api';
 
 @ApiTags('NFT')

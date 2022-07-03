@@ -14,11 +14,13 @@ export class NftCreationEvent {
 }
 
 export class NftReadInWalletEvent {
-  constructor(walletAddress: string, network: Network) {
+  constructor(walletAddress: string, network: Network, updateAuthority: string) {
     this.walletAddress = walletAddress;
     this.network = network;
+    this.updateAuthority = updateAuthority;
   }
 
+  updateAuthority: string;
   walletAddress: string;
   network: Network;
 }

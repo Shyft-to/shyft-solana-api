@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ReadNftDto } from './dto/read-nft.dto';
 import { ReadAllNftDto } from './dto/read-all-nft.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -13,10 +13,10 @@ export class ReadNftService {
 
   async readAllNfts(readAllNftDto: ReadAllNftDto): Promise<any> {
     try {
-      const { network, address } = readAllNftDto;
-      const fetchAllNft = new FetchAllNftDto(network, address);
-      const nftdata = await this.remoteDataFetcher.fetchAllNftDetails(fetchAllNft);
-      const nftDbResponse = nftdata.map((nft) => nft.getNftDbResponse());
+      const { network, address, update_authority } = readAllNftDto;
+      const fetchAllNft = new FetchAllNftDto(network, address, update_authority);
+      const nftData = await this.remoteDataFetcher.fetchAllNftDetails(fetchAllNft);
+      const nftDbResponse = nftData?.map((nft) => nft.getNftDbResponse());
 
       //Right now its being fetched from chain only
       // const nftReadInWalletEvent = new NftReadInWalletEvent(address, network);

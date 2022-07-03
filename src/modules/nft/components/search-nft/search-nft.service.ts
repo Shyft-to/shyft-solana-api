@@ -1,14 +1,14 @@
-import { Injectable } from "@nestjs/common";
-import { ObjectId } from "mongoose";
-import { NftInfoAccessor } from "src/dal/nft-repo/nft-info.accessor";
-import { getNftDbResponseFromNftInfo } from "src/dal/nft-repo/nft-info.helper";
+import { Injectable } from '@nestjs/common';
+import { ObjectId } from 'mongoose';
+import { NftInfoAccessor } from 'src/dal/nft-repo/nft-info.accessor';
+import { getNftDbResponseFromNftInfo } from 'src/dal/nft-repo/nft-info.helper';
 
 @Injectable()
 export class SearchNftService {
 	constructor(private nftInfoAccessor: NftInfoAccessor) { }
 	async searchNftsByAttributes(query: any, apiKeyId: ObjectId): Promise<any> {
 		const filter = {}
-		for (let key in query) {
+		for (const key in query) {
 			const k = "attributes." + key;
 			const n = parseInt(query[key])
 			if (!isNaN(n)) {

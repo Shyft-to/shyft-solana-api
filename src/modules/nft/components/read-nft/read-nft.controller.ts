@@ -9,7 +9,7 @@ import { ReadAllOpenApi, ReadOpenApi } from './open-api';
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller('nft')
 export class ReadNftController {
-  constructor(private readNftService: ReadNftService) { }
+  constructor(private readNftService: ReadNftService) {}
 
   @ReadAllOpenApi()
   @Get('read_all')
@@ -18,7 +18,7 @@ export class ReadNftController {
     const result = await this.readNftService.readAllNfts(readAllNftDto);
     return {
       success: true,
-      message: 'Your all NFTs',
+      message: 'All NFTS in your wallet',
       result,
     };
   }
