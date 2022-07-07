@@ -1,4 +1,7 @@
+import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Model } from 'mongoose';
+import { User } from 'src/dal/user.schema';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -6,7 +9,13 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [
+        {
+          provide: getModelToken(User.name),
+          useValue: Model, // <-- Use the Model Class from Mongoose
+        },
+        AuthService,
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
