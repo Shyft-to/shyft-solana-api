@@ -16,7 +16,7 @@ export interface NftDbResponse {
 }
 
 export class FetchAllNftDto {
-  constructor(network: Network, address: string, updateAuthority: string) {
+  constructor(network: Network, address: string, updateAuthority?: string) {
     this.network = network;
     this.walletAddress = address;
     this.updateAuthority = updateAuthority;
@@ -87,7 +87,7 @@ export class NftData {
     nftDbDto.symbol = this.onChainMetadata.data.symbol;
     nftDbDto.royalty = this.onChainMetadata.data.sellerFeeBasisPoints / 100; //Since onchain 500 = 5%
     nftDbDto.metadata_uri = this.onChainMetadata.data.uri;
-    nftDbDto.creators = this.onChainMetadata.data?.creators.map((cr) => {
+    nftDbDto.creators = this.onChainMetadata.data?.creators?.map((cr) => {
       return {
         address: cr.address,
         share: cr.share,
@@ -98,7 +98,7 @@ export class NftData {
     nftDbDto.description = this.offChainMetadata?.description;
     nftDbDto.external_url = this.offChainMetadata?.external_url;
     nftDbDto.attributes = {};
-    this.offChainMetadata?.attributes.map((trait) => {
+    this.offChainMetadata?.attributes?.map((trait) => {
       nftDbDto.attributes[trait?.trait_type] = trait?.value;
     });
     return nftDbDto;
