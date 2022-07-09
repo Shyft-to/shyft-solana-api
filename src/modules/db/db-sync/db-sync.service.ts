@@ -41,13 +41,13 @@ export class DbSyncService {
       const nfts = await this.remoteDataFetcher.fetchAllNftDetails(new FetchAllNftDto(event.network, event.walletAddress, event.updateAuthority));
       const nftInfos: NftInfo[] = nfts.map((nft) => {
         const info = nft.getNftInfoDto();
-        info.chain = event.network;
+        info.network = event.network;
         info.owner = event.walletAddress;
         return info;
       });
       await this.nftInfoAccessor.updateManyNft(nftInfos);
     } catch (err) {
-      throw Error(err);
+      console.error(err);
     }
   }
 
@@ -56,7 +56,7 @@ export class DbSyncService {
     try {
       await this.syncNftData(event);
     } catch (err) {
-      throw new Error(err);
+      console.error(err);
     }
   }
 
@@ -76,7 +76,7 @@ export class DbSyncService {
       const result = await this.nftInfoAccessor.updateNft(nftDbDto);
       return result;
     } catch (err) {
-      throw Error(err);
+      console.error(err);
     }
   }
 
@@ -84,8 +84,7 @@ export class DbSyncService {
     try {
       const nftData = await this.remoteDataFetcher.fetchNftDetails(new FetchNftDto(event.network, event.tokenAddress));
       const nftDbDto = nftData.getNftInfoDto();
-      nftDbDto.chain = event.network;
-
+      nftDbDto.network = event.network;
       return nftDbDto;
     } catch (error) {
       throw Error(error);
