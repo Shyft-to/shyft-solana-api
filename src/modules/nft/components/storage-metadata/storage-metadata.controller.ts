@@ -41,7 +41,7 @@ export class StorageMetadataController {
   async createMetadata(
     @Body() createMetadataDto: CreateMetadataDto,
   ): Promise<any> {
-    const metadata = await this.storageMetadataService.prepareMetaData(
+    const metadata = await this.storageMetadataService.prepareNFTMetadata(
       createMetadataDto,
     );
     return {

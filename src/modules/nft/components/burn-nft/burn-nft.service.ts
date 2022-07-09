@@ -47,7 +47,6 @@ export class BurnNftService {
 
       return result;
     } catch (error) {
-      console.log(error);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }

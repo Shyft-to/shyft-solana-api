@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NFTStorage, Blob } from 'nft.storage';
+import { configuration } from 'src/common/configs/config';
 import { AccountService } from 'src/modules/account/account.service';
 import { CreateMetadataDto } from './dto/create-metadata.dto';
 import { CreateTokenMetadataDto } from './dto/create-token-metadata.dto';
@@ -20,10 +21,10 @@ export class StorageMetadataService {
 
   async uploadToIPFS(file: Blob): Promise<IpfsUploadResponse> {
     const ipfstx = await storageClient.storeBlob(file);
-    return { cid: ipfstx, uri: `https://ipfs.io/ipfs/${ipfstx}` };
+    return { cid: ipfstx, uri: `${configuration().ipfsGateway} + ${ipfstx}` };
   }
 
-  async prepareMetaData(createMetadataDto: CreateMetadataDto): Promise<any> {
+  async prepareNFTMetadata(createMetadataDto: CreateMetadataDto): Promise<any> {
     const { private_key, image, name, description, symbol, attributes, share, seller_fee_basis_points, external_url } = createMetadataDto;
     const accountInfo = await this.accountService.getKeypair(private_key);
     const address = accountInfo.publicKey.toBase58();
@@ -45,7 +46,7 @@ export class StorageMetadataService {
     return uploadResponse;
   }
 
-  async prepareTokenMetaData(createTokenMetadataDto: CreateTokenMetadataDto): Promise<any> {
+  async prepareTokenMetadata(createTokenMetadataDto: CreateTokenMetadataDto): Promise<any> {
     const { name, symbol, description, image } = createTokenMetadataDto;
 
     const metadata = JSON.stringify({

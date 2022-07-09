@@ -20,7 +20,7 @@ export class UpdateNftController {
   async update(@UploadedFile() file: Express.Multer.File, @Body() updateNftDto: UpdateNftDto): Promise<any> {
     const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
     const image = uploadImage.uri;
-    const { uri } = await this.storageService.prepareMetaData({
+    const { uri } = await this.storageService.prepareNFTMetadata({
       network: updateNftDto.network,
       private_key: updateNftDto.private_key,
       image,

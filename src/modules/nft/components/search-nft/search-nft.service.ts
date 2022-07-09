@@ -19,7 +19,6 @@ export class SearchNftService {
 		}
 
 		filter["api_key_id"] = apiKeyId;
-		console.log(filter);
 		const filteredResult = await this.nftInfoAccessor.find(filter);
 		const result = filteredResult.map(r => {
 			return getNftDbResponseFromNftInfo(r);

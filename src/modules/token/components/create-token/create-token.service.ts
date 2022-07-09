@@ -94,12 +94,9 @@ export class CreateTokenService {
           },
         ),
       );
-      const txhash = await actions.sendTransaction({
-        connection,
-        wallet,
-        txs: [createNewTokenTransaction],
-        signers: [mintKeypair],
-      });
+
+      const signedTx = await wallet.signTransaction(createNewTokenTransaction);
+      const txhash = await connection.sendRawTransaction(signedTx.serialize());
 
       return { txhash, mint_token_address: mintKeypair.publicKey.toBase58() };
     } catch (err) {

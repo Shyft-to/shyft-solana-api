@@ -21,7 +21,7 @@ export class CreateNftController {
     const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
     const image = uploadImage.uri;
 
-    const { uri } = await this.storageService.prepareMetaData({
+    const { uri } = await this.storageService.prepareNFTMetadata({
       network: createNftDto.network,
       private_key: createNftDto.private_key,
       image,

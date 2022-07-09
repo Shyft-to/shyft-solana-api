@@ -6,4 +6,5 @@ export const configuration = () => ({
   sesApiVersion: process.env.SES_API_VERSION,
   sesEmailId: process.env.SES_EMAIL_ID,
   mongoURI: process.env.MONGO_URI,
+  ipfsGateway: process.env.IPFS_GATEWAY,
 });
