@@ -55,7 +55,7 @@ export class CreateNftDto {
 
   @ApiProperty({
     title: 'attributes',
-    type: Object,
+    type: String,
     description: 'NFT attributes',
     example: [{ trait_type: 'edification', value: '100' }],
   })
