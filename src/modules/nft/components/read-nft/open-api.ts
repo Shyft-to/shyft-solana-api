@@ -56,18 +56,18 @@ const ReadAllResponse = {
 };
 
 export function ReadAllOpenApi() {
-  return applyDecorators(ApiOperation({ summary: 'Read all NFT' }), ApiOkResponse(ReadAllResponse));
+  return applyDecorators(ApiOperation({ summary: 'Read all NFT from a wallet' }), ApiOkResponse(ReadAllResponse));
 }
 
 export function ReadOpenApi() {
   return applyDecorators(
-    ApiOperation({ summary: 'Read all NFTs from wallet' }),
+    ApiOperation({ summary: 'Read NFT  using mint address' }),
     ApiOkResponse({
-      description: 'NFT metadata',
+      description: 'Read NFT using mint address',
       schema: {
         example: {
           success: true,
-          message: 'NFT metadata',
+          message: 'NFT Data',
           result: {
             name: 'SHYFT',
             description: 'some description',
