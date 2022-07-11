@@ -24,7 +24,6 @@ export class ReadNftService {
 
       const dbNftInfo = await this.nftInfoAccessor.find(dbFilter);
 
-      //Right now its being fetched from chain only
       const nftReadInWalletEvent = new NftReadInWalletEvent(address, network, update_authority);
       this.eventEmitter.emit('all.nfts.read', nftReadInWalletEvent);
 

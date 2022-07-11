@@ -37,10 +37,15 @@ export class RemoteDataFetcherService {
     //Run all offchain requests parallely instead of one by one
     const promises: Promise<NftData>[] = [];
     for (const oncd of nfts) {
-      promises.push(this.getOffChainMetadata(oncd.data.uri));
-      //No need to fetch owner, we have the wallet Id
-      const owner = fetchAllNftDto.walletAddress;
-      result.push(new NftData(oncd, null, owner));
+      try {
+        promises.push(this.getOffChainMetadata(oncd.data.uri));
+      } catch (error) {
+        //Ignore off chain data that cant be fetched or is taking too long.
+      } finally {
+        //No need to fetch owner, we have the wallet Id
+        const owner = fetchAllNftDto.walletAddress;
+        result.push(new NftData(oncd, null, owner));
+      }
     }
 
     const res = await Promise.all(promises);
@@ -112,8 +117,7 @@ export class RemoteDataFetcherService {
       const uriRes = await this.httpService.get(uri).toPromise();
       return uriRes.status === 200 ? uriRes.data : {};
     } catch (error) {
-      //Dont throw exception, else all other gets will fail needlessly
-      console.log('error occurred for', uri);
+      throw error;
     }
   }
 }
