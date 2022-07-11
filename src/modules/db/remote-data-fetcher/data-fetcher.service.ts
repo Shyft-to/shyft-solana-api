@@ -48,13 +48,12 @@ export class RemoteDataFetcherService {
       }
     }
 
-    const res = await Promise.all(promises);
+    const res = await Promise.allSettled(promises);
 
     res?.forEach((data, i) => {
-      result[i].offChainMetadata = data;
+      result[i].offChainMetadata = data.status === 'fulfilled' ? data.value : {};
     });
     return result;
-
   }
 
   async fetchOwner(fetchNftDto: FetchNftDto): Promise<string> {
@@ -117,8 +116,7 @@ export class RemoteDataFetcherService {
       const uriRes = await this.httpService.get(uri).toPromise();
       return uriRes.status === 200 ? uriRes.data : {};
     } catch (error) {
-      //creating issues, will fix this later if required.
-      //throw error;
+      throw error;
     }
   }
 }
