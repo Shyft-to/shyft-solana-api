@@ -39,22 +39,22 @@ export class RemoteDataFetcherService {
     for (const oncd of nfts) {
       try {
         promises.push(this.getOffChainMetadata(oncd.data.uri));
-      } catch (error) {
-        //Ignore off chain data that cant be fetched or is taking too long.
-      } finally {
         //No need to fetch owner, we have the wallet Id
         const owner = fetchAllNftDto.walletAddress;
         result.push(new NftData(oncd, null, owner));
+      } catch (error) {
+        //Ignore off chain data that cant be fetched or is taking too long.
+        console.log('ignoring');
       }
     }
 
     const res = await Promise.all(promises);
 
-    res.forEach((data, i) => {
+    res?.forEach((data, i) => {
       result[i].offChainMetadata = data;
     });
-
     return result;
+
   }
 
   async fetchOwner(fetchNftDto: FetchNftDto): Promise<string> {
@@ -117,7 +117,8 @@ export class RemoteDataFetcherService {
       const uriRes = await this.httpService.get(uri).toPromise();
       return uriRes.status === 200 ? uriRes.data : {};
     } catch (error) {
-      throw error;
+      //creating issues, will fix this later if required.
+      //throw error;
     }
   }
 }

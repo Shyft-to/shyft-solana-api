@@ -38,7 +38,7 @@ export class NftInfoAccessor {
   public async updateManyNft(nfts: NftInfo[]): Promise<any> {
     try {
       await Promise.all(
-        nfts.map(async (nft) => {
+        nfts?.map(async (nft) => {
           const filter = { mint: nft.mint };
           await this.NftInfoDataModel.updateOne(filter, nft, { upsert: true });
         }),
