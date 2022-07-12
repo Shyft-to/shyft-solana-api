@@ -37,6 +37,7 @@ export class BurnNftDto {
     type: Boolean,
     description: '',
     example: false,
+    required: false,
   })
   @IsBoolean()
   @IsOptional()
@@ -47,6 +48,7 @@ export class BurnNftDto {
     type: Number,
     description: 'Amount to mint',
     example: 0.001,
+    required: false,
   })
   @IsNumber()
   @IsOptional()
