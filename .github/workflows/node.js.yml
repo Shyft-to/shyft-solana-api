@@ -44,6 +44,7 @@ jobs:
         ENV_SES_API_VERSION: ${{ secrets.SES_API_VERSION }}
         ENV_SES_EMAIL_ID: ${{ secrets.SES_EMAIL_ID }}
         ENV_MONGO_URI: ${{ secrets.MONGO_URI }}
+        ENV_IPFS_GATEWAY: ${{ secrets.IPFS_GATEWAY }}
     
     - name: Build
       run: |
