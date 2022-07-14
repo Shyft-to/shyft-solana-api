@@ -2,18 +2,31 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { Connection, NodeWallet, programs } from '@metaplex/js';
-import { UpdateNftDto } from './dto/update.dto';
 import { AccountService } from 'src/modules/account/account.service';
 import { Creator, Metadata, } from '@metaplex-foundation/mpl-token-metadata-depricated';
 import { NftUpdateEvent } from '../../../db/db-sync/db.events';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Network } from 'src/dto/network.dto';
+
+interface UpdateParams
+{
+  update_authority : string,
+  seller_fee_basis_points: number,
+  private_key: string,
+  is_mutable: boolean,
+  primary_sale_happened: boolean,
+  network: Network,
+  token_address: string,
+  name: string,
+  symbol: string,
+}
 
 @Injectable()
 export class UpdateNftService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor(private accountService: AccountService, private eventEmitter: EventEmitter2) { }
 
-  async updateNft(updateNftDto: UpdateNftDto, metaDataUri: string): Promise<any> {
+  async updateNft(metaDataUri: string, updateParams: UpdateParams): Promise<any> {
     if (!metaDataUri) {
       throw new Error('metadata URI missing');
     }
@@ -26,10 +39,9 @@ export class UpdateNftService {
         update_authority,
         seller_fee_basis_points,
         private_key,
-        share,
         is_mutable,
         primary_sale_happened,
-      } = updateNftDto;
+      } = updateParams;
 
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
 
@@ -42,7 +54,7 @@ export class UpdateNftService {
       const creators = new Array<Creator>(new programs.metadata.Creator({
         address: wallet.publicKey.toString(),
         verified: true,
-        share: share,
+        share: 100,
       }))
       const res = new programs.metadata.UpdateMetadataV2({
         recentBlockhash: (await connection.getLatestBlockhash('finalized')).blockhash,

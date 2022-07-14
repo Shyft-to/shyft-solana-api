@@ -48,7 +48,7 @@ export class StorageMetadataService {
       image,
       attributes,
       properties: {
-        creators: [{ address, verified: true, share }],
+        creators: [{ address, verified: address === accountInfo.publicKey.toBase58(), share }],
       },
     });
 

@@ -1,6 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Network } from 'src/dto/netwotk.dto';
 
 export class UpdateNftDto {
@@ -32,16 +32,6 @@ export class UpdateNftDto {
   @IsNotEmpty()
   @IsString()
   readonly token_address: string;
-
-  @ApiProperty({
-    title: 'update_authority',
-    type: String,
-    description: 'WALLET_ADDRESS',
-    example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly update_authority: string;
 
   @ApiProperty({
     title: 'name',
@@ -81,61 +71,7 @@ export class UpdateNftDto {
   })
   @IsNotEmpty()
   @Transform(({ value }) => JSON.parse(value), { toClassOnly: true })
-  attributes: {
-    trait_type: string;
-    value: string | number;
-  }[];
-
-  @ApiProperty({
-    title: 'share',
-    type: String,
-    description: 'NFT share',
-    example: '100',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
-  readonly share: number;
-
-  @ApiPropertyOptional({
-    title: 'external_url',
-    type: String,
-    description: 'NFT external URL',
-    example: 'https://www.example.com',
-  })
-  @IsOptional()
-  @IsString()
-  readonly external_url: string;
-
-  @ApiProperty({
-    title: 'is_mutable',
-    type: String,
-    description: 'mutable or not',
-    example: 'true',
-  })
-  @IsNotEmpty()
-  @Transform(
-    ({ value }) => {
-      return value === false || value === 0 ? false : true;
-    },
-    { toClassOnly: true },
-  )
-  readonly is_mutable: boolean;
-
-  @ApiPropertyOptional({
-    title: 'primary_sale_happened',
-    type: String,
-    description: 'primary sale happened or not',
-    example: 'false',
-  })
-  @IsOptional()
-  @Transform(
-    ({ value }) => {
-      return value === false || value === 0 ? false : true;
-    },
-    { toClassOnly: true },
-  )
-  readonly primary_sale_happened: boolean;
+  attributes: object;
 
   @ApiProperty({
     title: 'seller_fee_basis_points',
@@ -146,7 +82,7 @@ export class UpdateNftDto {
   @IsNotEmpty()
   @IsNumber()
   @Transform(({ value }) => parseInt(value), { toClassOnly: true })
-  readonly seller_fee_basis_points: number;
+  readonly royalty: number;
 
   @ApiProperty({
     name: 'file',

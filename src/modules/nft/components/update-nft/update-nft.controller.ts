@@ -6,34 +6,58 @@ import { Blob } from 'nft.storage';
 import { StorageMetadataService } from '../storage-metadata/storage-metadata.service';
 import { ApiTags, ApiSecurity } from '@nestjs/swagger';
 import { UpdateOpenApi } from './open-api';
+import { RemoteDataFetcherService } from 'src/modules/db/remote-data-fetcher/data-fetcher.service';
+import { FetchNftDto } from 'src/modules/db/remote-data-fetcher/dto/data-fetcher.dto';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller('nft')
 export class UpdateNftController {
-  constructor(private updateNftService: UpdateNftService, private storageService: StorageMetadataService) {}
+  constructor(private updateNftService: UpdateNftService, private storageService: StorageMetadataService, private dataFetcher: RemoteDataFetcherService) {}
 
   @UpdateOpenApi()
   @Put('update')
   @Version('1')
   @UseInterceptors(FileInterceptor('file'))
-  async update(@UploadedFile() file: Express.Multer.File, @Body() updateNftDto: UpdateNftDto): Promise<any> {
+  async update(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() updateNftDto: UpdateNftDto,
+  ): Promise<any> {
+    const nftInfo = (
+      await this.dataFetcher.fetchNft(
+        new FetchNftDto(updateNftDto.network, updateNftDto.token_address),
+      )
+    ).getNftInfoDto();
     const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
     const image = uploadImage.uri;
-    const { uri } = await this.storageService.prepareNFTMetadata({
+    //Tranform attributes
+    const attr = [];
+    Object.keys(updateNftDto.attributes).map((trait) => {
+      attr.push({ trait_type: trait, value: updateNftDto.attributes[trait] });
+    });
+
+    const createParams = {
       network: updateNftDto.network,
       private_key: updateNftDto.private_key,
       image,
       name: updateNftDto.name,
       description: updateNftDto.description,
       symbol: updateNftDto.symbol,
-      attributes: updateNftDto.attributes,
-      share: updateNftDto.share,
-      seller_fee_basis_points: updateNftDto.seller_fee_basis_points,
-      external_url: updateNftDto.external_url,
-    });
+      attributes: attr,
+      seller_fee_basis_points: updateNftDto.royalty,
+      share: 100,
+      external_url: nftInfo.external_url,
+    };
 
-    const res = await this.updateNftService.updateNft(updateNftDto, uri);
+    const { uri } = await this.storageService.prepareNFTMetadata(createParams);
+
+    const res = await this.updateNftService.updateNft(uri, {
+      ...updateNftDto,
+      ...createParams,
+      update_authority: nftInfo.update_authority,
+      is_mutable: nftInfo.is_mutable,
+      primary_sale_happened: nftInfo.primary_sale_happened,
+    });
     return {
       success: true,
       message: 'NFT updated',
