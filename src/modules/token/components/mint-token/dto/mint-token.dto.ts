@@ -23,6 +23,16 @@ export class MintTokenDto {
   readonly private_key: string;
 
   @ApiProperty({
+    title: 'receiver',
+    type: String,
+    description: 'Public Key of receiver',
+    example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly receiver: string;
+
+  @ApiProperty({
     title: 'mint_token',
     type: String,
     description: 'Mint Token',
@@ -30,7 +40,7 @@ export class MintTokenDto {
   })
   @IsNotEmpty()
   @IsString()
-  readonly mint_token_address: string;
+  readonly token_address: string;
 
   @ApiProperty({
     title: 'amount',

@@ -6,7 +6,7 @@ import { BurnTokenOpenApi } from './open-api';
 
 @ApiTags('Token')
 @ApiSecurity('api_key', ['x-api-key'])
-@Controller('delete')
+@Controller('token')
 export class BurnTokenController {
   constructor(private burnTokenService: BurnTokenService) {}
 

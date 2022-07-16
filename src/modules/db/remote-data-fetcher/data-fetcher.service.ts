@@ -4,6 +4,7 @@ import { Connection } from '@metaplex/js';
 import { Metadata, MetadataData } from '@metaplex-foundation/mpl-token-metadata-depricated';
 import { HttpService } from '@nestjs/axios';
 import { FetchNftDto, FetchAllNftDto, NftData } from './dto/data-fetcher.dto';
+import { Utility } from 'src/common/utils/utils';
 
 @Injectable()
 export class RemoteDataFetcherService {
@@ -38,7 +39,7 @@ export class RemoteDataFetcherService {
     const promises: Promise<NftData>[] = [];
     for (const oncd of nfts) {
       try {
-        promises.push(this.getOffChainMetadata(oncd.data.uri));
+        promises.push(Utility.request(oncd.data.uri));
         //No need to fetch owner, we have the wallet Id
         const owner = fetchAllNftDto.walletAddress;
         result.push(new NftData(oncd, null, owner));
@@ -99,7 +100,7 @@ export class RemoteDataFetcherService {
       const pda = await Metadata.getPDA(new PublicKey(tokenAddress));
       const metadata = await Metadata.load(connection, pda);
 
-      const uriRes = await this.getOffChainMetadata(metadata.data.data.uri);
+      const uriRes = await Utility.request(metadata.data.data.uri);
       if (!metadata) {
         throw new HttpException("Maybe you've lost", HttpStatus.NOT_FOUND);
       }
@@ -108,15 +109,6 @@ export class RemoteDataFetcherService {
       return retObj;
     } catch (error) {
       throw new HttpException(error.message, error.status);
-    }
-  }
-
-  private async getOffChainMetadata(uri: string): Promise<any> {
-    try {
-      const uriRes = await this.httpService.get(uri).toPromise();
-      return uriRes.status === 200 ? uriRes.data : {};
-    } catch (error) {
-      throw error;
     }
   }
 }

@@ -7,6 +7,7 @@ import { Creator, Metadata, } from '@metaplex-foundation/mpl-token-metadata-depr
 import { NftUpdateEvent } from '../../../db/db-sync/db.events';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Network } from 'src/dto/network.dto';
+import { AccountUtils } from 'src/common/utils/account-utils';
 
 interface UpdateParams
 {
@@ -24,7 +25,7 @@ interface UpdateParams
 @Injectable()
 export class UpdateNftService {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  constructor(private accountService: AccountService, private eventEmitter: EventEmitter2) { }
+  constructor(private eventEmitter: EventEmitter2) { }
 
   async updateNft(metaDataUri: string, updateParams: UpdateParams): Promise<any> {
     if (!metaDataUri) {
@@ -46,7 +47,7 @@ export class UpdateNftService {
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
 
       //generate wallet
-      const keypair = this.accountService.getKeypair(private_key);
+      const keypair = AccountUtils.getKeypair(private_key);
       const wallet = new NodeWallet(keypair);
 
       //get token's PDA (metadata address)

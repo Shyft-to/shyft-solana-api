@@ -38,7 +38,12 @@ export class CreateTokenController {
 
     const { name, description, symbol } = createTokenDto;
 
-    const { uri } = await this.storageService.prepareTokenMetadata({ name, symbol, description, image });
+    const { uri } = await this.storageService.prepareTokenMetadata({
+      name,
+      symbol,
+      description,
+      image,
+    });
 
     const result = await this.createTokenService.createToken(createTokenDto, uri);
     return {

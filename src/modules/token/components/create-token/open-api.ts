@@ -14,7 +14,7 @@ export function CreateTokenOpenApi() {
           message: 'Token created successfully',
           result: {
             txhash: "3j7CrPu3DMp6SMPS6YbML4WMd3c5v2kXDraSYLrqHWbZTCApwdSgWc7RbWnvLMSu8MjFe7FEbQHuPuHScLo4STdb",
-            mint_token_address: "EAmTA4TiEPShWKgy3G1iYyco3suogTocZVVbAwqjoPKV",
+            token_address: "EAmTA4TiEPShWKgy3G1iYyco3suogTocZVVbAwqjoPKV",
           },
         },
       },

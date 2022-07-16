@@ -2,32 +2,22 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { actions, Connection, NodeWallet } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import {
-  getAssociatedTokenAddress,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
-
+import { getAssociatedTokenAddress } from '@solana/spl-token';
+import { AccountUtils } from 'src/common/utils/account-utils';
 import { BurnNftDto } from './dto/burn-nft.dto';
-import { AccountService } from 'src/modules/account/account.service';
 import { NftDeleteEvent } from '../../../db/db-sync/db.events';
 
 @Injectable()
 export class BurnNftService {
-  constructor(
-    private accountService: AccountService,
-    private eventEmitter: EventEmitter2,
-  ) { }
+  constructor(private eventEmitter: EventEmitter2) { }
   async burnNft(burnNftDto: BurnNftDto): Promise<any> {
     try {
       const { network, private_key, token_address, close, amount } = burnNftDto;
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
-      const keypair = this.accountService.getKeypair(private_key);
+      const keypair = AccountUtils.getKeypair(private_key);
       const wallet = new NodeWallet(keypair);
+
       const associatedAddress = await getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        true,
         new PublicKey(token_address),
         keypair.publicKey,
       );

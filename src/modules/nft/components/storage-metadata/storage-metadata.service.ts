@@ -26,7 +26,7 @@ export class StorageMetadataService {
 
   async prepareNFTMetadata(createMetadataDto: CreateMetadataDto): Promise<any> {
     const {
-      private_key,
+      creator,
       image,
       name,
       description,
@@ -36,8 +36,6 @@ export class StorageMetadataService {
       royalty: seller_fee_basis_points,
       external_url,
     } = createMetadataDto;
-    const accountInfo = await this.accountService.getKeypair(private_key);
-    const address = accountInfo.publicKey.toBase58();
 
     const metadata = JSON.stringify({
       name,
@@ -48,7 +46,7 @@ export class StorageMetadataService {
       image,
       attributes,
       properties: {
-        creators: [{ address, verified: address === accountInfo.publicKey.toBase58(), share }],
+        creators: [{ creator, verified: true, share }],
       },
     });
 
@@ -62,7 +60,7 @@ export class StorageMetadataService {
     const metadata = JSON.stringify({
       name,
       symbol,
-      description,
+      description: description ?? 'Created with Shyft.to',
       image,
     });
 

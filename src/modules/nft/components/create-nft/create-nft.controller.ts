@@ -6,6 +6,7 @@ import { CreateNftService } from './create-nft.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { StorageMetadataService } from '../storage-metadata/storage-metadata.service';
 import { CreateOpenApi } from './open-api';
+import { AccountUtils } from 'src/common/utils/account-utils';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
@@ -23,7 +24,7 @@ export class CreateNftController {
 
     const { uri } = await this.storageService.prepareNFTMetadata({
       network: createNftDto.network,
-      private_key: createNftDto.private_key,
+      creator: AccountUtils.getKeypair(createNftDto.private_key).publicKey.toBase58(),
       image,
       name: createNftDto.name,
       description: createNftDto.description,

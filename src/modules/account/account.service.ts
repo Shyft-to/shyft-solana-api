@@ -1,15 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as bs58 from 'bs58';
-import { Connection, clusterApiUrl, Keypair, LAMPORTS_PER_SOL, Transaction, SystemProgram, PublicKey, sendAndConfirmTransaction } from '@solana/web3.js';
+import { Connection, clusterApiUrl, LAMPORTS_PER_SOL, Transaction, SystemProgram, PublicKey, sendAndConfirmTransaction } from '@solana/web3.js';
 import { BalanceCheckDto } from './dto/balance-check.dto';
 import { SendSolDto } from './dto/send-sol.dto';
+import { AccountUtils } from 'src/common/utils/account-utils';
 
 @Injectable()
 export class AccountService {
-  getKeypair(privateKey: string): Keypair {
-    const keypair = Keypair.fromSecretKey(bs58.decode(privateKey));
-    return keypair;
-  }
 
   async checkBalance(balanceCheckDto: BalanceCheckDto): Promise<number> {
     try {
@@ -27,7 +23,7 @@ export class AccountService {
       const { network, from_private_key, to_address, amount } = sendSolDto;
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
 
-      const from = this.getKeypair(from_private_key);
+      const from = AccountUtils.getKeypair(from_private_key);
       // Add transfer instruction to transaction
       const transaction = new Transaction().add(
         SystemProgram.transfer({

@@ -15,29 +15,35 @@ import {
   Keypair,
   SystemProgram,
   Transaction,
+  PublicKey,
 } from '@solana/web3.js';
 import { findMetadataPda } from '@metaplex-foundation/js';
 import { AccountService } from 'src/modules/account/account.service';
 import { CreateTokenDto } from './dto/create-token.dto';
-import { actions, NodeWallet } from '@metaplex/js';
+import { NodeWallet } from '@metaplex/js';
+import { AccountUtils } from 'src/common/utils/account-utils';
 
 @Injectable()
 export class CreateTokenService {
-  constructor(private accountService: AccountService) {}
+  constructor(private accountService: AccountService) { }
   async createToken(createTokenDto: CreateTokenDto, uri: string): Promise<any> {
     try {
-      const { network, private_key, name, symbol } = createTokenDto;
+      const {
+        network,
+        private_key,
+        name,
+        symbol,
+        mint_authority,
+        freeze_authority,
+      } = createTokenDto;
+
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
-      const feePayer = this.accountService.getKeypair(private_key);
+      const feePayer = AccountUtils.getKeypair(private_key);
       const wallet = new NodeWallet(feePayer);
 
       const lamports = await getMinimumBalanceForRentExemptMint(connection);
       const mintKeypair = Keypair.generate();
       const metadataPDA = findMetadataPda(mintKeypair.publicKey);
-      const tokenATA = await getAssociatedTokenAddress(
-        mintKeypair.publicKey,
-        feePayer.publicKey,
-      );
 
       const tokenMetadata = {
         name,
@@ -55,6 +61,9 @@ export class CreateTokenService {
         uses: null,
       } as DataV2;
 
+      const mintAuthority = mint_authority ? new PublicKey(mint_authority) : feePayer.publicKey;
+      const freezeAuthority = freeze_authority ? new PublicKey(freeze_authority) : feePayer.publicKey;
+
       const createNewTokenTransaction = new Transaction().add(
         SystemProgram.createAccount({
           fromPubkey: feePayer.publicKey,
@@ -66,17 +75,9 @@ export class CreateTokenService {
         createInitializeMintInstruction(
           mintKeypair.publicKey,
           9, // decimals
-          feePayer.publicKey,
-          feePayer.publicKey,
+          mintAuthority,
+          freezeAuthority,
           TOKEN_PROGRAM_ID,
-        ),
-        createAssociatedTokenAccountInstruction(
-          feePayer.publicKey,
-          tokenATA,
-          feePayer.publicKey,
-          mintKeypair.publicKey,
-          TOKEN_PROGRAM_ID,
-          ASSOCIATED_TOKEN_PROGRAM_ID,
         ),
         createCreateMetadataAccountV2Instruction(
           {
@@ -95,10 +96,15 @@ export class CreateTokenService {
         ),
       );
 
+      const blockHash = (await connection.getLatestBlockhash('finalized')).blockhash;
+      createNewTokenTransaction.recentBlockhash = blockHash;
+      createNewTokenTransaction.feePayer = feePayer.publicKey;
+      createNewTokenTransaction.partialSign(mintKeypair);
+
       const signedTx = await wallet.signTransaction(createNewTokenTransaction);
       const txhash = await connection.sendRawTransaction(signedTx.serialize());
 
-      return { txhash, mint_token_address: mintKeypair.publicKey.toBase58() };
+      return { txhash, token_address: mintKeypair.publicKey.toBase58() };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

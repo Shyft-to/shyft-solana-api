@@ -1,41 +1,55 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, mintToChecked } from '@solana/spl-token';
-
+import { mintToChecked, getOrCreateAssociatedTokenAccount, getMint } from '@solana/spl-token';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import { AccountService } from 'src/modules/account/account.service';
+import { AccountUtils } from 'src/common/utils/account-utils';
 import { MintTokenDto } from './dto/mint-token.dto';
 
 @Injectable()
 export class MintTokenService {
-  constructor(private accountService: AccountService) {}
   async mintToken(mintTokenDto: MintTokenDto): Promise<any> {
     try {
-      const { network, private_key, mint_token_address, amount } = mintTokenDto;
+      const {
+        network,
+        private_key,
+        token_address: token_address,
+        amount,
+        receiver,
+      } = mintTokenDto;
+
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
-      const feePayer = this.accountService.getKeypair(private_key);
+      const feePayer = AccountUtils.getKeypair(private_key);
 
-      const tokenAddressPubkey = new PublicKey(mint_token_address);
+      const tokenAddressPubkey = new PublicKey(token_address);
+      const tokenInfo = await getMint(connection, tokenAddressPubkey);
 
-      const tokenAccountOwner = await PublicKey.findProgramAddress(
-        [
-          feePayer.publicKey.toBuffer(),
-          TOKEN_PROGRAM_ID.toBuffer(),
-          tokenAddressPubkey.toBuffer(),
-        ],
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-      );
+      if (tokenInfo.isInitialized) {
+        if (tokenInfo.mintAuthority.toBase58() !== feePayer.publicKey.toBase58()) {
+          throw Error('You dont have the authority to mint these tokens');
+        }
+        //Get or Create an associated token address for receiver.
+        const tokenAccountOwner = await getOrCreateAssociatedTokenAccount(
+          connection,
+          feePayer,
+          new PublicKey(token_address),
+          new PublicKey(receiver),
+        );
 
-      const txhash = await mintToChecked(
-        connection, // connection
-        feePayer, // fee payer
-        tokenAddressPubkey, // mint
-        tokenAccountOwner[0], // receiver (sholud be a token account)
-        feePayer, // mint authority
-        LAMPORTS_PER_SOL * amount,
-        9, // decimals
-      );
+        const decimalAmount = Math.pow(10, tokenInfo.decimals);
 
-      return { txhash, mint_token_address };
+        const txhash = await mintToChecked(
+          connection, // connection
+          feePayer, // fee payer
+          tokenAddressPubkey, // mint
+          tokenAccountOwner.address, // receiver (sholud be a token account)
+          feePayer, // mint authority
+          decimalAmount * amount,
+          tokenInfo.decimals, // decimals
+        );
+
+        return { txhash };
+      } else {
+        throw Error('Token not initialized');
+      }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

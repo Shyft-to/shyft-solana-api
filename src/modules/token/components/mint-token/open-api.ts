@@ -13,7 +13,6 @@ export function MintTokenOpenApi() {
           message: 'Token minted successfully',
           result: {
             txhash: "4nCL9h3d761dYQcfo1Jb8ikeN9ydfUtrXeZh3sCbHE32s1LjHxQCJTTjcn7XXTLUTPj3GsfMHyeGngJ7yyeyd1ts",
-            mint_token_address: "EAmTA4TiEPShWKgy3G1iYyco3suogTocZVVbAwqjoPKV",
           },
         },
       },

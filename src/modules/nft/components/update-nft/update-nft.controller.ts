@@ -8,6 +8,7 @@ import { ApiTags, ApiSecurity } from '@nestjs/swagger';
 import { UpdateOpenApi } from './open-api';
 import { RemoteDataFetcherService } from 'src/modules/db/remote-data-fetcher/data-fetcher.service';
 import { FetchNftDto } from 'src/modules/db/remote-data-fetcher/dto/data-fetcher.dto';
+import { AccountUtils } from 'src/common/utils/account-utils';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
@@ -38,7 +39,7 @@ export class UpdateNftController {
 
     const createParams = {
       network: updateNftDto.network,
-      private_key: updateNftDto.private_key,
+      creator: AccountUtils.getKeypair(updateNftDto.private_key).publicKey.toBase58(),
       image,
       name: updateNftDto.name,
       description: updateNftDto.description,

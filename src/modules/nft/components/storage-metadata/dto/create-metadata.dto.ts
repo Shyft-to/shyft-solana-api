@@ -13,14 +13,14 @@ export class CreateMetadataDto {
   readonly network: Network;
 
   @ApiProperty({
-    title: 'private_key',
+    title: 'Creator',
     type: String,
-    description: 'YOUR_WALLET_PRIVATE_KEY',
-    example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
+    description: 'Creaors Wallet Address',
+    example: 'BvzKvn6nUUAYtKu2pH3h5SbUkUNcRPQawg4bURBiojJx',
   })
   @IsNotEmpty()
   @IsString()
-  readonly private_key: string;
+  readonly creator: string;
 
   @ApiProperty({
     title: 'image',
