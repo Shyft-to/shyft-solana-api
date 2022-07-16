@@ -8,7 +8,7 @@ export class BalanceCheckDto {
     title: 'network',
     type: String,
     enum: Network,
-    description: 'Select network',
+    description: 'Select solana blockchain environment',
   })
   @IsNotEmpty()
   readonly network: Network;
@@ -16,7 +16,7 @@ export class BalanceCheckDto {
   @ApiProperty({
     title: 'address',
     type: String,
-    description: ']',
+    description: 'Wallet address',
     example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
   })
   @IsNotEmpty()

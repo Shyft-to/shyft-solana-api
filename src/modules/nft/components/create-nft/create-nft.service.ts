@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { clusterApiUrl } from '@solana/web3.js';
 import { actions, Connection, NodeWallet } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -23,22 +23,24 @@ export class CreateNftService {
     if (!metadataUri) {
       throw new Error('No metadata URI');
     }
-    const connection = new Connection(clusterApiUrl(network), 'confirmed');
-    const from = AccountUtils.getKeypair(privateKey);
-    const wallet = new NodeWallet(from);
-    const nft = await actions.mintNFT({
-      connection,
-      wallet,
-      uri: metadataUri,
-      maxSupply: maxSupply || 1,
-    });
+    try {
+      const connection = new Connection(clusterApiUrl(network), 'confirmed');
+      const from = AccountUtils.getKeypair(privateKey);
+      const wallet = new NodeWallet(from);
+      const nft = await actions.mintNFT({
+        connection,
+        wallet,
+        uri: metadataUri,
+        maxSupply: maxSupply || 1,
+      });
 
-    const nftCreationEvent = new NftCreationEvent(nft.mint.toString(), createParams.network, createParams.userId);
-    this.eventEmitter.emit('nft.created', nftCreationEvent);
+      const nftCreationEvent = new NftCreationEvent(nft.mint.toString(), createParams.network, createParams.userId);
+      this.eventEmitter.emit('nft.created', nftCreationEvent);
 
-    return nft;
-  } catch(err) {
-    console.log(err)
+      return nft;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
 

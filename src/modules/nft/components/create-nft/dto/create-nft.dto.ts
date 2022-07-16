@@ -16,7 +16,7 @@ export class CreateNftDto {
   @ApiProperty({
     title: 'private_key',
     type: String,
-    description: 'Your wallet\'s private key',
+    description: 'Creator\'s wallet\'s private key',
     example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
   })
   @IsNotEmpty()
