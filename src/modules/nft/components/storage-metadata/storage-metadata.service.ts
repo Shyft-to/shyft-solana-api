@@ -33,7 +33,7 @@ export class StorageMetadataService {
       symbol,
       attributes,
       share,
-      royalty: seller_fee_basis_points,
+      royalty,
       external_url,
     } = createMetadataDto;
 
@@ -41,7 +41,7 @@ export class StorageMetadataService {
       name,
       symbol,
       description,
-      seller_fee_basis_points: seller_fee_basis_points ? seller_fee_basis_points : 0,
+      seller_fee_basis_points: royalty ? royalty : 0,
       external_url: external_url ? external_url : '',
       image,
       attributes,
