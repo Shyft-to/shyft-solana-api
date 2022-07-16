@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { clusterApiUrl } from '@solana/web3.js';
 import { actions, Connection, NodeWallet } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AccountService } from 'src/modules/account/account.service';
 import { NftCreationEvent } from '../../../db/db-sync/db.events';
 import { Network } from 'src/dto/netwotk.dto';
 import { ObjectId } from 'mongoose';
@@ -38,5 +37,8 @@ export class CreateNftService {
     this.eventEmitter.emit('nft.created', nftCreationEvent);
 
     return nft;
+  } catch(err) {
+    console.log(err)
   }
 }
+

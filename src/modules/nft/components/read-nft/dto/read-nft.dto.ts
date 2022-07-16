@@ -7,7 +7,7 @@ export class ReadNftDto {
     title: 'network',
     type: String,
     enum: Network,
-    description: 'Select network',
+    description: 'Select solana blockchain environment',
   })
   @IsNotEmpty()
   readonly network: Network;

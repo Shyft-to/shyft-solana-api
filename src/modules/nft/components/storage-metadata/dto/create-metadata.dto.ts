@@ -102,5 +102,5 @@ export class CreateMetadataDto {
   })
   @IsOptional()
   @IsNumber()
-  readonly seller_fee_basis_points: number;
+  readonly royalty: number;
 }

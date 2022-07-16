@@ -7,7 +7,7 @@ export class ReadAllNftDto {
     title: 'network',
     type: String,
     enum: Network,
-    description: 'Select network',
+    description: 'Select solana blockchain environment',
   })
   @IsNotEmpty()
   readonly network: Network;
@@ -23,7 +23,7 @@ export class ReadAllNftDto {
   readonly address: string;
 
   @ApiProperty({
-    title: 'update authority address',
+    title: 'update_authority address. Filters only those nfts in your wallet which have this update_authority.',
     type: String,
     description: 'Update Authority, projects wallet address',
     example: 'BvzKvn6nUUAYtKu2pH3h5SbUkUNcRPQawg4bURBiojJx',

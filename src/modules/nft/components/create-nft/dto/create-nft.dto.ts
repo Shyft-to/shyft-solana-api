@@ -8,7 +8,7 @@ export class CreateNftDto {
     title: 'network',
     type: String,
     enum: Network,
-    description: 'Select network',
+    description: 'Select solana blockchain environment',
   })
   @IsNotEmpty()
   readonly network: Network;
@@ -16,7 +16,7 @@ export class CreateNftDto {
   @ApiProperty({
     title: 'private_key',
     type: String,
-    description: 'YOUR_WALLET_PRIVATE_KEY',
+    description: 'Your wallet\'s private key',
     example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
   })
   @IsNotEmpty()
@@ -56,7 +56,7 @@ export class CreateNftDto {
   @ApiProperty({
     title: 'attributes',
     type: String,
-    description: 'NFT attributes',
+    description: 'Attributes associated to this NFT',
     example: [{ trait_type: 'edification', value: '100' }],
   })
   @IsNotEmpty()
@@ -69,7 +69,7 @@ export class CreateNftDto {
   @ApiPropertyOptional({
     title: 'external_url',
     type: String,
-    description: 'NFT external URL',
+    description: 'An Url to associate with the NFT',
     example: 'https://shyft.to',
   })
   @IsOptional()
@@ -79,7 +79,7 @@ export class CreateNftDto {
   @ApiProperty({
     title: 'max_supply',
     type: Number,
-    description: 'NFT max_supply_number',
+    description: 'Maximum number of clones/edition mints possible for this NFT',
     example: '1',
   })
   @IsNotEmpty()
@@ -100,7 +100,7 @@ export class CreateNftDto {
 
   @ApiProperty({
     name: 'file',
-    description: 'File to be uploaded',
+    description: 'Image/pdf/.doc or any file that you would want to turn into nft',
     type: 'string',
     format: 'binary',
   })

@@ -11,7 +11,7 @@ import { CreateOpenApi } from './open-api';
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller('nft')
 export class CreateNftController {
-  constructor(private createNftService: CreateNftService, private storageService: StorageMetadataService) {}
+  constructor(private createNftService: CreateNftService, private storageService: StorageMetadataService) { }
 
   @CreateOpenApi()
   @Post('create')
@@ -30,7 +30,7 @@ export class CreateNftController {
       symbol: createNftDto.symbol,
       attributes: createNftDto.attributes,
       share: 100, //keeping it 100 by default for now createNftDto.share,
-      seller_fee_basis_points: createNftDto.royalty * 100, //500 = 5%
+      royalty: createNftDto.royalty * 100, //500 = 5%
       external_url: createNftDto.external_url,
     });
 

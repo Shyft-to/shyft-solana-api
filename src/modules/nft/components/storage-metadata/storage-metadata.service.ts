@@ -33,7 +33,7 @@ export class StorageMetadataService {
       symbol,
       attributes,
       share,
-      seller_fee_basis_points,
+      royalty: seller_fee_basis_points,
       external_url,
     } = createMetadataDto;
     const accountInfo = await this.accountService.getKeypair(private_key);

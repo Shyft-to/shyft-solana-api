@@ -8,7 +8,7 @@ export class UpdateNftDto {
     title: 'network',
     type: String,
     enum: Network,
-    description: 'Select network',
+    description: 'Select solana blockchain environment ',
   })
   @IsNotEmpty()
   readonly network: Network;
@@ -16,7 +16,7 @@ export class UpdateNftDto {
   @ApiProperty({
     title: 'private_key',
     type: String,
-    description: 'YOUR_WALLET_PRIVATE_KEY',
+    description: 'your wallet\'s private key',
     example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
   })
   @IsNotEmpty()
@@ -26,7 +26,7 @@ export class UpdateNftDto {
   @ApiProperty({
     title: 'token_address',
     type: String,
-    description: 'YOUR_NFT_TOKEN_ADDRESS',
+    description: 'address of the NFT to be updated',
     example: 'HJ32KZye152eCFQYrKDcoyyq77dVDpa8SXE6v8T1HkBP',
   })
   @IsNotEmpty()
@@ -66,7 +66,7 @@ export class UpdateNftDto {
   @ApiProperty({
     title: 'attributes',
     type: Object,
-    description: 'NFT attributes',
+    description: 'attributes associated to this NFT ',
     example: [{ trait_type: 'edification', value: '100' }],
   })
   @IsNotEmpty()
@@ -76,7 +76,7 @@ export class UpdateNftDto {
   @ApiProperty({
     title: 'seller_fee_basis_points',
     type: String,
-    description: 'NFT seller fee basis points',
+    description: 'NFT royalty on secondary sales, between 0 - 100',
     example: '100',
   })
   @IsNotEmpty()
@@ -86,7 +86,7 @@ export class UpdateNftDto {
 
   @ApiProperty({
     name: 'file',
-    description: 'File to be uploaded',
+    description: 'digital file that NFT represents',
     type: 'string',
     format: 'binary',
   })

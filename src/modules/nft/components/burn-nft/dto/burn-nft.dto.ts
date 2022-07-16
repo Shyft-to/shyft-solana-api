@@ -7,7 +7,7 @@ export class BurnNftDto {
     title: 'network',
     type: String,
     enum: Network,
-    description: 'Select network',
+    description: 'Select solana blockchain environment',
   })
   @IsNotEmpty()
   readonly network: Network;
@@ -15,7 +15,7 @@ export class BurnNftDto {
   @ApiProperty({
     title: 'private_key',
     type: String,
-    description: 'YOUR_WALLET_PRIVATE_KEY',
+    description: 'Your wallet\'s private key',
     example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
   })
   @IsNotEmpty()

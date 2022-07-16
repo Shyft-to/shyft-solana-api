@@ -16,7 +16,7 @@ export class BalanceCheckDto {
   @ApiProperty({
     title: 'address',
     type: String,
-    description: 'Your wallet address',
+    description: ']',
     example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
   })
   @IsNotEmpty()
