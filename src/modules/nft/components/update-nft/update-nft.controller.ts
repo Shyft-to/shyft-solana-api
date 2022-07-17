@@ -10,6 +10,15 @@ import { RemoteDataFetcherService } from 'src/modules/db/remote-data-fetcher/dat
 import { FetchNftDto } from 'src/modules/db/remote-data-fetcher/dto/data-fetcher.dto';
 import { AccountUtils } from 'src/common/utils/account-utils';
 
+function transformAttributes(attributes) {
+  const attr = []
+  Object.keys(attributes).map((trait) => {
+    attr.push({ trait_type: trait, value: attributes[trait] });
+  });
+
+  return attr;
+}
+
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
 @Controller('nft')
@@ -24,28 +33,22 @@ export class UpdateNftController {
     @UploadedFile() file: Express.Multer.File,
     @Body() updateNftDto: UpdateNftDto,
   ): Promise<any> {
-    const nftInfo = (
-      await this.dataFetcher.fetchNft(
-        new FetchNftDto(updateNftDto.network, updateNftDto.token_address),
-      )
-    ).getNftInfoDto();
-    const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
-    const image = uploadImage.uri;
-    //Tranform attributes
-    const attr = [];
-    Object.keys(updateNftDto.attributes).map((trait) => {
-      attr.push({ trait_type: trait, value: updateNftDto.attributes[trait] });
-    });
+    const nftInfo = (await this.dataFetcher.fetchNft(new FetchNftDto(updateNftDto.network, updateNftDto.token_address))).getNftInfoDto();
+    let image = nftInfo.image_uri;
+    if (file) {
+      const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
+      image = uploadImage.uri;
+    }
 
     const createParams = {
       network: updateNftDto.network,
       creator: AccountUtils.getKeypair(updateNftDto.private_key).publicKey.toBase58(),
       image,
-      name: updateNftDto.name,
-      description: updateNftDto.description,
-      symbol: updateNftDto.symbol,
-      attributes: attr,
-      royalty: updateNftDto.royalty,
+      name: updateNftDto.name ?? nftInfo.name,
+      description: updateNftDto.description ?? nftInfo.description,
+      symbol: updateNftDto.symbol ?? nftInfo.symbol,
+      attributes: updateNftDto.attributes ? transformAttributes(updateNftDto.attributes) : transformAttributes(nftInfo.attributes),
+      royalty: updateNftDto.royalty ?? nftInfo.royalty,
       share: 100,
       external_url: nftInfo.external_url,
     };

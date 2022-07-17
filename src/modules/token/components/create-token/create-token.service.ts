@@ -18,14 +18,12 @@ import {
   PublicKey,
 } from '@solana/web3.js';
 import { findMetadataPda } from '@metaplex-foundation/js';
-import { AccountService } from 'src/modules/account/account.service';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { NodeWallet } from '@metaplex/js';
 import { AccountUtils } from 'src/common/utils/account-utils';
 
 @Injectable()
 export class CreateTokenService {
-  constructor(private accountService: AccountService) { }
   async createToken(createTokenDto: CreateTokenDto, uri: string): Promise<any> {
     try {
       const {
@@ -35,6 +33,7 @@ export class CreateTokenService {
         symbol,
         mint_authority,
         freeze_authority,
+        decimals,
       } = createTokenDto;
 
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
@@ -74,7 +73,7 @@ export class CreateTokenService {
         }),
         createInitializeMintInstruction(
           mintKeypair.publicKey,
-          9, // decimals
+          decimals ?? 9, // decimals
           mintAuthority,
           freezeAuthority,
           TOKEN_PROGRAM_ID,

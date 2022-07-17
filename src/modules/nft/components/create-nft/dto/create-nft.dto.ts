@@ -95,7 +95,13 @@ export class CreateNftDto {
   })
   @IsNotEmpty()
   @IsNumber()
-  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
+  @Transform(({ value }) => {
+    value = Math.max(0, Math.min(value, 100));
+    value = value * 100; // since 100 = 1%
+    return value;
+    },
+    { toClassOnly: true },
+  )
   readonly royalty: number;
 
   @ApiProperty({

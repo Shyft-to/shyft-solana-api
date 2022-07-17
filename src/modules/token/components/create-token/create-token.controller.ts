@@ -31,10 +31,13 @@ export class CreateTokenController {
     @UploadedFile() file: Express.Multer.File,
     @Body() createTokenDto: CreateTokenDto,
   ): Promise<any> {
-    const uploadImage = await this.storageService.uploadToIPFS(
-      new Blob([file.buffer], { type: file.mimetype }),
-    );
-    const image = uploadImage.uri;
+    let image: string;
+    if (file) {
+      const uploadImage = await this.storageService.uploadToIPFS(
+        new Blob([file.buffer], { type: file.mimetype }),
+      );
+      image = uploadImage.uri;
+    }
 
     const { name, description, symbol } = createTokenDto;
 

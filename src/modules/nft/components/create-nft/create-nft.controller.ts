@@ -21,17 +21,18 @@ export class CreateNftController {
   async createNft(@UploadedFile() file: Express.Multer.File, @Body() createNftDto: CreateNftDto, @Req() request: any): Promise<any> {
     const uploadImage = await this.storageService.uploadToIPFS(new Blob([file.buffer], { type: file.mimetype }));
     const image = uploadImage.uri;
+    const creator = AccountUtils.getKeypair(createNftDto.private_key).publicKey.toBase58();
 
     const { uri } = await this.storageService.prepareNFTMetadata({
       network: createNftDto.network,
-      creator: AccountUtils.getKeypair(createNftDto.private_key).publicKey.toBase58(),
+      creator: creator,
       image,
       name: createNftDto.name,
       description: createNftDto.description,
       symbol: createNftDto.symbol,
       attributes: createNftDto.attributes,
       share: 100, //keeping it 100 by default for now createNftDto.share,
-      royalty: createNftDto.royalty * 100, //500 = 5%
+      royalty: createNftDto.royalty, //500 = 5%
       external_url: createNftDto.external_url,
     });
 

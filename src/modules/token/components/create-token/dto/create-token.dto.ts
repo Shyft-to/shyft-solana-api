@@ -41,7 +41,6 @@ export class CreateTokenDto {
     required: false,
   })
   @IsOptional()
-  @IsNotEmpty()
   @IsString()
   readonly freeze_authority: string;
 
@@ -53,7 +52,6 @@ export class CreateTokenDto {
     required: false,
   })
   @IsOptional()
-  @IsNotEmpty()
   @IsString()
   readonly mint_authority: string;
 
@@ -75,8 +73,12 @@ export class CreateTokenDto {
     required: false,
   })
   @IsOptional()
-  @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => {
+    value = parseInt(value);
+    value = value ?? 9;
+    return value;
+  })
   readonly decimals: number;
 
   @ApiProperty({
@@ -86,7 +88,6 @@ export class CreateTokenDto {
     example: 'This is a test token',
   })
   @IsOptional()
-  @IsNotEmpty()
   @IsString()
   readonly description: string;
 
