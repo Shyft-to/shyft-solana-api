@@ -8,10 +8,16 @@ import {
   Version,
 } from '@nestjs/common';
 import { ApiTags, ApiSecurity } from '@nestjs/swagger';
-import { BalanceCheckDto } from './dto/balance-check.dto';
+import { BalanceCheckDto, ResolveAddressDto } from './dto/balance-check.dto';
 import { WalletService } from './account.service';
 import { SendSolDto } from './dto/send-sol.dto';
-import { AllTokensOpenApi, BalanceCheckOpenApi, PortfoliOpenApi, SendBalanceOpenApi, TokenBalanceOpenApi } from './open-api';
+import {
+  AllTokensOpenApi,
+  BalanceCheckOpenApi,
+  PortfoliOpenApi,
+  SendBalanceOpenApi,
+  TokenBalanceOpenApi,
+} from './open-api';
 import { TokenBalanceCheckDto } from './dto/token-balance-check.dto';
 
 @ApiTags('Wallet')
@@ -81,6 +87,31 @@ export class AccountController {
     return {
       success: true,
       message: `${count} tokens fetched successfully`,
+      result: allTokens,
+    };
+  }
+
+  @AllTokensOpenApi()
+  @Get('get_domains')
+  @Version('1')
+  async getDomains(@Query() balanceCheckDto: BalanceCheckDto): Promise<any> {
+    const allTokens = await this.walletService.getDomains(balanceCheckDto);
+    const count = Object.keys(allTokens)?.length ?? 0;
+    return {
+      success: true,
+      message: `${count} domains fetched successfully`,
+      result: allTokens,
+    };
+  }
+
+  @AllTokensOpenApi()
+  @Get('resolve_address')
+  @Version('1')
+  async resolveAddress(@Query() addressDto: ResolveAddressDto): Promise<any> {
+    const allTokens = await this.walletService.resolveAddress(addressDto);
+    return {
+      success: true,
+      message: 'Address resolved successfully',
       result: allTokens,
     };
   }

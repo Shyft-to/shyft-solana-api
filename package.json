@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.107.0",
+    "@bonfida/spl-name-service": "^0.1.41",
     "@metaplex-foundation/js": "^0.11.7",
     "@metaplex-foundation/mpl-auction": "^0.0.2",
     "@metaplex-foundation/mpl-core": "^0.0.5",

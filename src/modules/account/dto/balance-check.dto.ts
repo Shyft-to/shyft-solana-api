@@ -23,3 +23,25 @@ export class BalanceCheckDto {
   @IsString()
   readonly wallet: string;
 }
+
+
+export class ResolveAddressDto {
+  @ApiProperty({
+    title: 'network',
+    type: String,
+    enum: Network,
+    description: 'Select solana blockchain environment',
+  })
+  @IsNotEmpty()
+  readonly network: Network;
+
+  @ApiProperty({
+    title: 'address',
+    type: String,
+    description: 'Wallet address',
+    example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly address: string;
+}

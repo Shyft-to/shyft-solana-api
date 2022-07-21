@@ -8,13 +8,14 @@ import {
   PublicKey,
   sendAndConfirmTransaction,
 } from '@solana/web3.js';
-import { BalanceCheckDto } from './dto/balance-check.dto';
+import { BalanceCheckDto, ResolveAddressDto, } from './dto/balance-check.dto';
 import { SendSolDto } from './dto/send-sol.dto';
 import { AccountUtils } from 'src/common/utils/account-utils';
 import { TokenBalanceCheckDto } from './dto/token-balance-check.dto';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { RemoteDataFetcherService } from '../db/remote-data-fetcher/data-fetcher.service';
 import { FetchAllNftDto } from '../db/remote-data-fetcher/dto/data-fetcher.dto';
+import { getAllDomains, performReverseLookup, performReverseLookupBatch } from '@bonfida/spl-name-service';
 
 @Injectable()
 export class WalletService {
@@ -103,6 +104,30 @@ export class WalletService {
 
     await Promise.allSettled(promises);
     return portfolio;
+  }
+
+  async getDomains(walletDto: BalanceCheckDto) {
+    const connection = new Connection(clusterApiUrl(walletDto.network), 'confirmed');
+    const domains = await getAllDomains(connection, new PublicKey(walletDto.wallet));
+
+    const names = await performReverseLookupBatch(connection, domains);
+    const resp = [];
+    names.forEach((element, i) => {
+      resp.push({address: domains[i], name: `${element}.sol`});
+    });
+
+    return resp;
+  }
+
+  async resolveAddress(nameAddressDto: ResolveAddressDto) {
+    try {
+      const connection = new Connection(clusterApiUrl(nameAddressDto.network), 'confirmed');
+      const name = await performReverseLookup(connection, new PublicKey(nameAddressDto.address));
+      console.log(name);
+      return { name: `${name}.sol` };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async sendSol(sendSolDto: SendSolDto): Promise<string> {
