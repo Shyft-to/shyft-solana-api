@@ -19,7 +19,7 @@ import { getAllDomains, performReverseLookup, performReverseLookupBatch } from '
 
 @Injectable()
 export class WalletService {
-  constructor(private dataFetcher: RemoteDataFetcherService) {}
+  constructor(private dataFetcher: RemoteDataFetcherService) { }
   async getBalance(balanceCheckDto: BalanceCheckDto): Promise<number> {
     try {
       const { wallet, network } = balanceCheckDto;
@@ -58,7 +58,7 @@ export class WalletService {
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
       const allTokenInfo = [];
       try {
-        const parsedSplAccts = await connection.getParsedTokenAccountsByOwner(new PublicKey(wallet), {programId: TOKEN_PROGRAM_ID});
+        const parsedSplAccts = await connection.getParsedTokenAccountsByOwner(new PublicKey(wallet), { programId: TOKEN_PROGRAM_ID });
         parsedSplAccts.value.forEach((token) => {
           const amount = token.account?.data?.parsed?.info?.tokenAmount?.uiAmount;
           const decimals = token.account?.data?.parsed?.info?.tokenAmount?.decimals;
@@ -113,7 +113,7 @@ export class WalletService {
     const names = await performReverseLookupBatch(connection, domains);
     const resp = [];
     names.forEach((element, i) => {
-      resp.push({address: domains[i], name: `${element}.sol`});
+      resp.push({ address: domains[i], name: `${element}.sol` });
     });
 
     return resp;
@@ -123,7 +123,6 @@ export class WalletService {
     try {
       const connection = new Connection(clusterApiUrl(nameAddressDto.network), 'confirmed');
       const name = await performReverseLookup(connection, new PublicKey(nameAddressDto.address));
-      console.log(name);
       return { name: `${name}.sol` };
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
