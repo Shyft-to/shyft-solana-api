@@ -24,7 +24,7 @@ import { Utility } from 'src/common/utils/utils';
 
 @Injectable()
 export class WalletService {
-  constructor(private dataFetcher: RemoteDataFetcherService) {}
+  constructor(private dataFetcher: RemoteDataFetcherService) { }
   async getBalance(balanceCheckDto: BalanceCheckDto): Promise<number> {
     try {
       const { wallet, network } = balanceCheckDto;
@@ -66,7 +66,7 @@ export class WalletService {
       const connection = new Connection( Utility.clusterUrl(network), 'confirmed');
       const allTokenInfo = [];
       try {
-        const parsedSplAccts = await connection.getParsedTokenAccountsByOwner(new PublicKey(wallet), {programId: TOKEN_PROGRAM_ID});
+        const parsedSplAccts = await connection.getParsedTokenAccountsByOwner(new PublicKey(wallet), { programId: TOKEN_PROGRAM_ID });
         parsedSplAccts.value.forEach((token) => {
           const amount = token.account?.data?.parsed?.info?.tokenAmount?.uiAmount;
           const decimals = token.account?.data?.parsed?.info?.tokenAmount?.decimals;
@@ -121,7 +121,7 @@ export class WalletService {
     const names = await performReverseLookupBatch(connection, domains);
     const resp = [];
     names.forEach((element, i) => {
-      resp.push({address: domains[i], name: `${element}.sol`});
+      resp.push({ address: domains[i], name: `${element}.sol` });
     });
 
     return resp;
