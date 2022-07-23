@@ -7,4 +7,6 @@ export const configuration = () => ({
   sesEmailId: process.env.SES_EMAIL_ID,
   mongoURI: process.env.MONGO_URI,
   ipfsGateway: process.env.IPFS_GATEWAY,
+  solDevnet: process.env.SOL_DEVNET,
+  solMainnetBeta: process.env.SOL_MAINNET_BETA,
 });
