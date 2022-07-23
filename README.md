@@ -1,73 +1,43 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+  <a href="http://shyft.to/" target="blank"><img src="https://shyft.to/assets/images/shyft_logo_2.svg" width="320" alt="Shyft Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Why is SHYFT required?
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### SHYFT is a suite of managed services for frictionless web3 development.
 
-## Description
+Launching a scalable decentralized app in today's time is like going on a monster hunt, with Shyft's multiple web3 modules in your arsenal, the hunt becomes easier. 🐱‍🏍
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Get your free API key](https://shyft.to/get-api-key) to start hacking with SHYFT and equip yourself with the above and more super powers.
 
-## Installation
+[Documentation](https://docs.shyft.to/)
 
-```bash
-$ npm install
+[Try out in Swagger UI](https://api.shyft.to/sol/api/explore/)
+
+[Postman Documentation](https://documenter.getpostman.com/view/18419720/UzQvt5Kf)
+
+[Import Postman Collection](https://www.getpostman.com/collections/eb766924a309c10d6d7e)
+
+Some out of the box features :godmode:
+
 ```
+- Create/Read/Update/Burn NFTs programmatically.
 
-## Running the app
+- Create NFTs as access tokens.
 
-```bash
-# development
-$ npm run start
+- Program your own fungible tokens.
 
-# watch mode
-$ npm run start:dev
+- Fetch your user's entire portfolio.
 
-# production mode
-$ npm run start:prod
+- Denote your users with their named accounts.
+
+- Relay service for monitoring on-chain activities. (soon)
+
+- Semi-Custodial Wallet Infrastructure. (soon)
+
+- Deploy an in-app marketplace (soon).
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+Shyft is [MIT licensed](LICENSE).

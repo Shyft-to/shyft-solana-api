@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   Connection,
-  clusterApiUrl,
   LAMPORTS_PER_SOL,
   Transaction,
   SystemProgram,
