@@ -1,41 +1,55 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { actions, Connection, NodeWallet } from '@metaplex/js';
+import { clusterApiUrl, PublicKey, Transaction } from '@solana/web3.js';
+import { Connection } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getAssociatedTokenAddress } from '@solana/spl-token';
-import { AccountUtils } from 'src/common/utils/account-utils';
+import { createBurnCheckedInstruction, createCloseAccountInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
 import { BurnNftDto } from './dto/burn-nft.dto';
-import { NftDeleteEvent } from '../../../db/db-sync/db.events';
+import * as bs58 from 'bs58';
 
 @Injectable()
 export class BurnNftService {
   constructor(private eventEmitter: EventEmitter2) { }
   async burnNft(burnNftDto: BurnNftDto): Promise<any> {
     try {
-      const { network, private_key, token_address, close, amount } = burnNftDto;
+      const { network, address, token_address, close } = burnNftDto;
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
-      const keypair = AccountUtils.getKeypair(private_key);
-      const wallet = new NodeWallet(keypair);
-
-      const associatedAddress = await getAssociatedTokenAddress(
+      const addressPubKey = new PublicKey(address);
+      const associatedTokenAddress = await getAssociatedTokenAddress(
         new PublicKey(token_address),
-        keypair.publicKey,
+        addressPubKey,
+      );
+      const tokenAddressPubKey = new PublicKey(token_address);
+
+      const tx = new Transaction().add(
+        createBurnCheckedInstruction(
+          associatedTokenAddress, // token account
+          tokenAddressPubKey, // mint
+          addressPubKey, // owner of token account
+          1, // amount,
+          0, // decimals
+        ),
       );
 
-      const result = await actions.burnToken({
-        connection,
-        wallet,
-        token: associatedAddress,
-        mint: new PublicKey(token_address),
-        amount: amount || 1,
-        owner: keypair.publicKey,
-        close: close,
-      });
+      if (close) {
+        tx.add(
+          createCloseAccountInstruction(
+            associatedTokenAddress, // token account which you want to close
+            addressPubKey, // destination
+            addressPubKey, // owner of token account
+          ),
+        );
+      }
 
-      const nftCreationEvent = new NftDeleteEvent(token_address);
-      this.eventEmitter.emit('nft.deleted', nftCreationEvent);
+      const blockHash = (await connection.getLatestBlockhash('finalized'))
+        .blockhash;
+      tx.feePayer = addressPubKey;
+      tx.recentBlockhash = blockHash;
 
-      return result;
+      const transactionBuffer = tx.serializeMessage();
+      return bs58.encode(transactionBuffer);
+
+      // const nftCreationEvent = new NftDeleteEvent(token_address);
+      // this.eventEmitter.emit('nft.deleted', nftCreationEvent);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

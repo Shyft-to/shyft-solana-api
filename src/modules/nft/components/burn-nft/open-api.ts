@@ -10,9 +10,9 @@ export function BurnOpenApi() {
       schema: {
         example: {
           success: true,
-          message: 'NFT burned successfully',
+          message: 'NFT burn request created successfully',
           result: {
-            txId: 'T9xnfTpcZhzhT6UBjQKkD5bDXtw4agZw7btBGND6dTLJJKWhpE24a5BhsHVjmAU1eCCS9fqM6TZ8Hg2u4F2vXTM',
+            encoded_transaction: '5eG1aSjNoPmScw84G1d7f9n2fgmWabtQEgRjTUXvpTrRH1qduEMwUvUFYiS8px22JNedkWFTUWj9PrRyq1MyessunKC8Mjyq3hH5WZkM15D3gsooH8hsFegyYRBmccLBTEnPph6fExEySkJwsfH6oGC62VmDDCpWyPHZLYv52e4qtUb1TBE6SgXE6FX3TFqrX5HApSkb9ZaCSz21FyyEbXtrmMxBQE1CR7BTyadWL1Vy9SLfo9tnsVpHHDHthFRr',
           },
         },
       },

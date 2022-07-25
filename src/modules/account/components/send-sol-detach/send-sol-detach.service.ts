@@ -8,6 +8,8 @@ import {
   Transaction,
 } from '@solana/web3.js';
 
+import * as bs58 from "bs58";
+
 import { SendSolDetachDto } from './dto/send-sol-detach.dto';
 
 @Injectable()
@@ -36,7 +38,7 @@ export class SendSolDetachService {
 
       const transactionBuffer = tx.serializeMessage();
 
-      return transactionBuffer;
+      return bs58.encode(transactionBuffer);
     } catch (err) {
       console.log(err);
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);

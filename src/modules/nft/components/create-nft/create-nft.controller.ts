@@ -6,7 +6,6 @@ import { CreateNftService } from './create-nft.service';
 import { CreateNftDto } from './dto/create-nft.dto';
 import { StorageMetadataService } from '../storage-metadata/storage-metadata.service';
 import { CreateOpenApi } from './open-api';
-import { AccountUtils } from 'src/common/utils/account-utils';
 
 @ApiTags('NFT')
 @ApiSecurity('api_key', ['x-api-key'])
@@ -24,7 +23,7 @@ export class CreateNftController {
 
     const { uri } = await this.storageService.prepareNFTMetadata({
       network: createNftDto.network,
-      creator: AccountUtils.getKeypair(createNftDto.private_key).publicKey.toBase58(),
+      creator: createNftDto.address,
       image,
       name: createNftDto.name,
       description: createNftDto.description,
@@ -37,18 +36,21 @@ export class CreateNftController {
 
     const mintNftRequest = {
       network: createNftDto.network,
-      privateKey: createNftDto.private_key,
+      name: createNftDto.name,
+      symbol: createNftDto.symbol,
+      address: createNftDto.address,
       metadataUri: uri,
       maxSupply: createNftDto.max_supply,
+      royalty: createNftDto.royalty,
       userId: request.id,
     };
 
-    const nft = await this.createNftService.mintNft(mintNftRequest);
+    const encoded_transaction = await this.createNftService.mintNft(mintNftRequest);
 
     return {
       success: true,
-      message: 'NFT created successfully',
-      result: nft,
+      message: 'NFT mint request generated successfully',
+      result: { encoded_transaction },
     };
   }
 }

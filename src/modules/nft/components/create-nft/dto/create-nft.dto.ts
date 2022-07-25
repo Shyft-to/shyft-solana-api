@@ -14,14 +14,14 @@ export class CreateNftDto {
   readonly network: Network;
 
   @ApiProperty({
-    title: 'private_key',
+    title: 'address',
     type: String,
-    description: 'Creator\'s wallet\'s private key',
-    example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
+    description: 'Creator\'s wallet\'s address',
+    example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
   })
   @IsNotEmpty()
   @IsString()
-  readonly private_key: string;
+  readonly address: string;
 
   @ApiProperty({
     title: 'name',

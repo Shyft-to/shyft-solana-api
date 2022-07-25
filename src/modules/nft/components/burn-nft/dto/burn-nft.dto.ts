@@ -13,14 +13,14 @@ export class BurnNftDto {
   readonly network: Network;
 
   @ApiProperty({
-    title: 'private_key',
+    title: 'address',
     type: String,
-    description: 'NFT holder wallet\'s private key',
-    example: '5GGZQpoiDPRJLwMonq4ovBBKbxvNq76L3zgMXyiQ5grbPzgF3k35dkHuWwt3GmwVGZBXywXteJcJ53Emsda92D5v',
+    description: 'NFT holder wallet\'s address',
+    example: '2fmz8SuNVyxEP6QwKQs6LNaT2ATszySPEJdhUDesxktc',
   })
   @IsNotEmpty()
   @IsString()
-  readonly private_key: string;
+  readonly address: string;
 
   @ApiProperty({
     title: 'token_address',
@@ -42,15 +42,4 @@ export class BurnNftDto {
   @IsBoolean()
   @IsOptional()
   readonly close: boolean;
-
-  @ApiProperty({
-    title: 'amount',
-    type: Number,
-    description: 'Amount to mint',
-    example: 0.001,
-    required: false,
-  })
-  @IsNumber()
-  @IsOptional()
-  readonly amount: number;
 }

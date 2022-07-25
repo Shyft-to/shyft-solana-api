@@ -13,12 +13,12 @@ export class BurnNftController {
   @Delete('burn')
   @Version('1')
   async burnNft(@Body() burnNftDto: BurnNftDto): Promise<any> {
-    const result = await this.burnNftService.burnNft(burnNftDto);
+    const encoded_transaction = await this.burnNftService.burnNft(burnNftDto);
 
     return {
       success: true,
-      message: 'NFT burned successfully',
-      result,
+      message: 'NFT burn request created successfully',
+      result: { encoded_transaction },
     };
   }
 }
