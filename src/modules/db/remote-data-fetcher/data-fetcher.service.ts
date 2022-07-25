@@ -67,7 +67,7 @@ export class RemoteDataFetcherService {
 
       return ownerInfo.value?.data?.parsed?.info?.owner;
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       throw new HttpException(error.message, error.status);
     }
   }
@@ -97,8 +97,14 @@ export class RemoteDataFetcherService {
       }
       const pda = await Metadata.getPDA(new PublicKey(tokenAddress));
       const metadata = await Metadata.load(connection, pda);
+      let uriRes = {};
 
-      const uriRes = await Utility.request(metadata.data.data.uri);
+      try {
+        uriRes = await Utility.request(metadata.data.data.uri);
+      } catch (error) {
+        console.log(error);
+      }
+
       if (!metadata) {
         throw new HttpException("Maybe you've lost", HttpStatus.NOT_FOUND);
       }
