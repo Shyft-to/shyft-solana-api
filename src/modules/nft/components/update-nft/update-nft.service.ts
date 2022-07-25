@@ -10,6 +10,7 @@ import { AccountUtils } from 'src/common/utils/account-utils';
 
 interface UpdateParams {
   update_authority: string,
+  new_update_authority: string,
   royalty: number,
   private_key: string,
   is_mutable: boolean,
@@ -40,6 +41,7 @@ export class UpdateNftService {
         private_key,
         is_mutable,
         primary_sale_happened,
+        new_update_authority,
       } = updateParams;
 
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
@@ -55,12 +57,16 @@ export class UpdateNftService {
         verified: true,
         share: 100,
       }))
+
+      const newAuthority = new_update_authority ? new_update_authority : undefined;;
+
       const res = new programs.metadata.UpdateMetadataV2({
         recentBlockhash: (await connection.getLatestBlockhash('finalized')).blockhash,
         feePayer: wallet.publicKey
       }, {
         metadata: pda,
         updateAuthority: new PublicKey(update_authority),
+        newUpdateAuthority: new PublicKey(newAuthority),
         metadataData: new programs.metadata.DataV2({
           name: name,
           symbol: symbol,
@@ -68,7 +74,7 @@ export class UpdateNftService {
           sellerFeeBasisPoints: royalty,
           creators: creators,
           uses: null,
-          collection: null
+          collection: null,
         }),
         primarySaleHappened: primary_sale_happened,
         isMutable: is_mutable

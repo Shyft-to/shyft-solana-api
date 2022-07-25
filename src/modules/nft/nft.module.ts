@@ -16,10 +16,12 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DbModule } from '../db/db.module';
 import { SearchNftcontroller } from './components/search-nft/search-nft.controller';
 import { SearchNftService } from './components/search-nft/search-nft.service';
+import { TransferNftService } from './components/transfer-nft/transfer-nft.service';
+import { TransferNftController } from './components/transfer-nft/transfer-nft.controller';
 
 @Module({
-  controllers: [CreateNftController, ReadNftController, BurnNftController, UpdateNftController, StorageMetadataController, SearchNftcontroller],
+  controllers: [CreateNftController, ReadNftController, BurnNftController, UpdateNftController, StorageMetadataController, SearchNftcontroller, TransferNftController],
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), EventEmitterModule.forRoot(), DbModule],
-  providers: [CreateNftService, WalletService, ReadNftService, BurnNftService, UpdateNftService, StorageMetadataService, SearchNftService],
+  providers: [CreateNftService, WalletService, ReadNftService, BurnNftService, UpdateNftService, StorageMetadataService, SearchNftService, TransferNftService],
 })
 export class NftModule { }

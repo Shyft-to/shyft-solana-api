@@ -44,6 +44,16 @@ export class UpdateNftDto {
   readonly name: string;
 
   @ApiProperty({
+    title: 'name',
+    type: String,
+    description: 'NFT name',
+    example: 'fish eyes',
+  })
+  @IsString()
+  @IsOptional()
+  readonly new_update_authority: string;
+
+  @ApiProperty({
     title: 'symbol',
     type: String,
     description: 'NFT symbol',
