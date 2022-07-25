@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Put,
+  Post,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -38,13 +38,12 @@ export class UpdateNftController {
   ) {}
 
   @UpdateOpenApi()
-  @Put('update')
+  @Post('update')
   @Version('1')
   @UseInterceptors(FileInterceptor('file'))
   async update(
     @UploadedFile() file: Express.Multer.File,
     @Body() updateNftDto: UpdateNftDto,
-    @Req() request: any
   ): Promise<any> {
     const nftInfo = (await this.dataFetcher.fetchNft(new FetchNftDto(updateNftDto.network, updateNftDto.token_address))).getNftInfoDto();
     let image = nftInfo.image_uri;
