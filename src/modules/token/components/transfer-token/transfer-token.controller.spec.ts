@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransferTokenController } from './transfer-token.controller';
 
-describe('MintTokenController', () => {
+describe('TransferTokenController', () => {
   let controller: TransferTokenController;
 
   beforeEach(async () => {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransferNftController } from './transfer-nft.controller';
 
-describe('UpdateNftController', () => {
+describe('TransferNftController', () => {
   let controller: TransferNftController;
 
   beforeEach(async () => {

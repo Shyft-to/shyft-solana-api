@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransferNftService } from './transfer-nft.service';
 
-describe('ReadNftService', () => {
+describe('TransferNftService', () => {
   let service: TransferNftService;
 
   beforeEach(async () => {

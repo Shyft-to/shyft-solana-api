@@ -106,7 +106,7 @@ export class RemoteDataFetcherService {
       }
 
       if (!metadata) {
-        throw new HttpException("Maybe you've lost", HttpStatus.NOT_FOUND);
+        throw new HttpException("No metadata account found", HttpStatus.NOT_FOUND);
       }
 
       const retObj = new NftData(metadata.data, uriRes);

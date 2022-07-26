@@ -13,7 +13,7 @@ export class TransferTokenController {
   @TransferTokenOpenApi()
   @Post('transfer')
   @Version('1')
-  async mintToken(@Body() transferTokenDto: TransferTokenDto): Promise<any> {
+  async transferToken(@Body() transferTokenDto: TransferTokenDto): Promise<any> {
     const result = await this.transferService.transferToken(transferTokenDto);
 
     return {
