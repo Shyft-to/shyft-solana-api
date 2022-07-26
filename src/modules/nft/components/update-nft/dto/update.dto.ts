@@ -36,18 +36,18 @@ export class UpdateNftDto {
   @ApiProperty({
     title: 'name',
     type: String,
-    description: 'NFT name',
-    example: 'fish eyes',
+    description: 'Name of the NFT',
+    example: 'Shyft',
   })
   @IsString()
   @IsOptional()
   readonly name: string;
 
   @ApiProperty({
-    title: 'name',
+    title: 'new_update_authority',
     type: String,
-    description: 'NFT name',
-    example: 'fish eyes',
+    description: 'New update authority',
+    example: '97a3giHcGsk8YoEgWv4rP1ooWwJBgS72fpckZM6mQiFH',
   })
   @IsString()
   @IsOptional()
@@ -57,7 +57,7 @@ export class UpdateNftDto {
     title: 'symbol',
     type: String,
     description: 'NFT symbol',
-    example: 'FYE',
+    example: 'SH',
   })
   @IsString()
   @IsOptional()
@@ -67,7 +67,7 @@ export class UpdateNftDto {
     title: 'description',
     type: String,
     description: 'NFT description',
-    example: 'Girl with beautiful eyes',
+    example: 'Shyft makes web3 development easy',
   })
   @IsString()
   @IsOptional()

@@ -27,7 +27,7 @@ export class CreateNftDto {
     title: 'name',
     type: String,
     description: 'NFT name',
-    example: 'fish eyes',
+    example: 'Shyft',
   })
   @IsNotEmpty()
   @IsString()
@@ -37,7 +37,7 @@ export class CreateNftDto {
     title: 'symbol',
     type: String,
     description: 'NFT symbol',
-    example: 'FYE',
+    example: 'SH',
   })
   @IsNotEmpty()
   @IsString()
@@ -47,7 +47,7 @@ export class CreateNftDto {
     title: 'description',
     type: String,
     description: 'NFT description',
-    example: 'Girl with beautiful eyes',
+    example: 'Shyft makes web3 development so easy.',
   })
   @IsNotEmpty()
   @IsString()
