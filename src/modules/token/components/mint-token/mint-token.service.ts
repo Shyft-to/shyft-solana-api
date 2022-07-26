@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { mintToChecked, getOrCreateAssociatedTokenAccount, getMint } from '@solana/spl-token';
-import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 import { AccountUtils } from 'src/common/utils/account-utils';
 import { MintTokenDto } from './dto/mint-token.dto';
 
