@@ -3,31 +3,40 @@ import {
   clusterApiUrl,
   Keypair,
   PublicKey,
+  sendAndConfirmTransaction,
+  SystemProgram,
   Transaction,
 } from '@solana/web3.js';
-import { Connection, transactions } from '@metaplex/js';
+import { Connection, NodeWallet, transactions } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 // import { NftCreationEvent } from '../../../db/db-sync/db.events';
 import { Network } from 'src/dto/netwotk.dto';
 import { ObjectId } from 'mongoose';
 import { sign } from 'tweetnacl';
+import * as beet from '@metaplex-foundation/beet'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  createInitializeMintInstruction,
+  createMintToInstruction,
   getAssociatedTokenAddress,
   getMinimumBalanceForRentExemptMint,
+  MINT_SIZE,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
-// import { createCreateMetadataAccountV2Instruction, DataV2 } from '@metaplex-foundation/mpl-token-metadata';
-import { findMetadataPda } from '@metaplex-foundation/js';
+import { findAssociatedTokenAccountPda, findMasterEditionV2Pda, findMetadataPda, TransactionBuilder } from '@metaplex-foundation/js';
 import * as bs58 from 'bs58';
 import {
   CreateMasterEdition,
+  CreateMasterEditionArgs,
   CreateMetadata,
   Creator,
   MasterEdition,
   MetadataDataData,
 } from '@metaplex-foundation/mpl-token-metadata-depricated';
 import * as BN from 'bn.js';
+import { createCreateMasterEditionV3Instruction, createCreateMetadataAccountV2Instruction, DataV2 } from '@metaplex-foundation/mpl-token-metadata';
+import { AccountUtils } from 'src/common/utils/account-utils';
 export interface CreateParams {
   network: Network;
   name: string;
@@ -53,137 +62,207 @@ export class CreateNftService {
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
       const mintRent = await getMinimumBalanceForRentExemptMint(connection);
       const mintKeypair = Keypair.generate();
-      console.log('mint', mintKeypair.publicKey.toBase58());
-      
-      const metadataPDA = findMetadataPda(mintKeypair.publicKey);
+      const feePayer = AccountUtils.getKeypair('5GGZQpoiDHuWwt3GmwVGZPRJLwMonq4ozgMXyiQ5grbPzgF3k35dkBXywXvBBKbxvNq76L3teJcJ53Emsda92D5v');
+      const wallet = new NodeWallet(feePayer);
+      const metadataPda = findMetadataPda(mintKeypair.publicKey);
+      const masterEditionPda = findMasterEditionV2Pda(mintKeypair.publicKey);
+      console.log('masterEditionPda', masterEditionPda);
+      console.log('........................');
       const editionPDA = await MasterEdition.getPDA(mintKeypair.publicKey);
+      console.log('editionPDA', editionPDA);
+
       const addressPubKey = new PublicKey(address);
-
-      // const nftMetadata = {
-      //   name,
-      //   symbol,
-      //   uri: metadataUri,
-      //   sellerFeeBasisPoints: royalty,
-      //   creators: [
-      //     {
-      //       address: new PublicKey(address),
-      //       verified: true,
-      //       share: 100,
-      //     },
-      //   ],
-      //   collection: {
-      //     verified: true,
-      //     key: new PublicKey(address),
-      //   },
-      //   uses: null,
-      // } as DataV2;
-
-      const metadataData = new MetadataDataData({
-        name,
-        symbol,
-        uri: metadataUri,
-        sellerFeeBasisPoints: royalty,
-        creators: [
-          new Creator({
-            address,
-            verified: true,
-            share: 100,
-          }),
-        ],
-      });
-
-      const createMintTx = new transactions.CreateMint(
-        { feePayer: addressPubKey },
-        {
-          newAccountPubkey: mintKeypair.publicKey,
-          lamports: mintRent,
-        },
-      );
-      console.log(createMintTx);
-
-      const createMetadataTx = new CreateMetadata(
-        {
-          feePayer: addressPubKey,
-        },
-        {
-          metadata: metadataPDA,
-          metadataData,
-          updateAuthority: addressPubKey,
-          mint: mintKeypair.publicKey,
-          mintAuthority: addressPubKey,
-        },
-      );
-      console.log(createMetadataTx);
-
-      const recipient = await getAssociatedTokenAddress(
+      const associatedToken = findAssociatedTokenAccountPda(
         mintKeypair.publicKey,
         addressPubKey,
-        false,
         TOKEN_PROGRAM_ID,
         ASSOCIATED_TOKEN_PROGRAM_ID,
       );
 
-      const createAssociatedTokenAccountTx =
-        new transactions.CreateAssociatedTokenAccount(
-          { feePayer: addressPubKey },
+      const nftMetadata = {
+        name,
+        symbol,
+        uri: metadataUri,
+        sellerFeeBasisPoints: 0,
+        creators: [
           {
-            associatedTokenAddress: recipient,
-            splTokenMintAddress: mintKeypair.publicKey,
+            address: addressPubKey,
+            verified: true,
+            share: 100,
           },
-        );
-        console.log(createAssociatedTokenAccountTx);
+        ],
+        collection: null,
+        uses: null,
+      } as DataV2;
 
-      const mintToTx = new transactions.MintTo(
-        { feePayer: addressPubKey },
-        {
-          mint: mintKeypair.publicKey,
-          dest: recipient,
-          amount: 1,
-        },
-      );
-      console.log(mintToTx);
+      // const createMintTx = new transactions.CreateMint(
+      //   { feePayer: addressPubKey },
+      //   {
+      //     newAccountPubkey: mintKeypair.publicKey,
+      //     lamports: mintRent,
+      //   },
+      // );
+      // console.log(createMintTx);
+
+      // const createMetadataTx = new CreateMetadata(
+      //   {
+      //     feePayer: addressPubKey,
+      //   },
+      //   {
+      //     metadata: metadataPDA,
+      //     metadataData,
+      //     updateAuthority: addressPubKey,
+      //     mint: mintKeypair.publicKey,
+      //     mintAuthority: addressPubKey,
+      //   },
+      // );
+      // console.log(createMetadataTx);
+
+      // const recipient = await getAssociatedTokenAddress(
+      //   mintKeypair.publicKey,
+      //   addressPubKey,
+      //   false,
+      //   TOKEN_PROGRAM_ID,
+      //   ASSOCIATED_TOKEN_PROGRAM_ID,
+      // );
+
+      // const createAssociatedTokenAccountTx =
+      //   new transactions.CreateAssociatedTokenAccount(
+      //     { feePayer: addressPubKey },
+      //     {
+      //       associatedTokenAddress: recipient,
+      //       splTokenMintAddress: mintKeypair.publicKey,
+      //     },
+      //   );
+      //   console.log(createAssociatedTokenAccountTx);
+
+      // const mintToTx = new transactions.MintTo(
+      //   { feePayer: addressPubKey },
+      //   {
+      //     mint: mintKeypair.publicKey,
+      //     dest: recipient,
+      //     amount: 1,
+      //   },
+      // );
+      // console.log(mintToTx);
       
 
-      const masterEditionTx = new CreateMasterEdition(
-        { feePayer: addressPubKey },
-        {
-          edition: editionPDA,
-          metadata: metadataPDA,
-          updateAuthority: addressPubKey,
-          mint: mintKeypair.publicKey,
-          mintAuthority: addressPubKey,
-          maxSupply: maxSupply || maxSupply === 0 ? new BN(maxSupply) : null,
-        },
-      );
-      console.log(masterEditionTx);
+      // const masterEditionTx = new CreateMasterEdition(
+      //   { feePayer: addressPubKey },
+      //   {
+      //     edition: editionPDA,
+      //     metadata: metadataPDA,
+      //     updateAuthority: addressPubKey,
+      //     mint: mintKeypair.publicKey,
+      //     mintAuthority: addressPubKey,
+      //     maxSupply: maxSupply || maxSupply === 0 ? new BN(maxSupply) : null,
+      //   },
+      // );
+      // console.log(masterEditionTx);
       
+
+      // const tx = new Transaction().add(
+      //   createMintTx,
+      //   createMetadataTx,
+      //   createAssociatedTokenAccountTx,
+      //   mintToTx,
+      //   masterEditionTx,
+      // );
+      // console.log('a', tx);
 
       const tx = new Transaction().add(
-        createMintTx,
-        createMetadataTx,
-        createAssociatedTokenAccountTx,
-        mintToTx,
-        masterEditionTx,
+        SystemProgram.createAccount({
+          fromPubkey: addressPubKey,
+          newAccountPubkey: mintKeypair.publicKey,
+          space: MINT_SIZE,
+          lamports: mintRent,
+          programId: TOKEN_PROGRAM_ID,
+        }),
+        createInitializeMintInstruction(
+          mintKeypair.publicKey,
+          0,
+          addressPubKey,
+          addressPubKey,
+          TOKEN_PROGRAM_ID,
+        ),
+        createAssociatedTokenAccountInstruction(
+          addressPubKey,
+          associatedToken,
+          addressPubKey,
+          mintKeypair.publicKey,
+          TOKEN_PROGRAM_ID,
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+        ),
+        createMintToInstruction(
+          mintKeypair.publicKey,
+          associatedToken,
+          addressPubKey,
+          mintRent,
+        ),
+        createCreateMetadataAccountV2Instruction(
+          {
+            metadata: metadataPda,
+            mint: mintKeypair.publicKey,
+            mintAuthority: addressPubKey,
+            payer: addressPubKey,
+            updateAuthority: addressPubKey,
+          },
+          {
+            createMetadataAccountArgsV2: { data: nftMetadata, isMutable: true },
+          },
+        ),
+        // createCreateMasterEditionV3Instruction(
+        //   {
+        //     edition: masterEditionPda,
+        //     mint: mintKeypair.publicKey,
+        //     updateAuthority: addressPubKey,
+        //     mintAuthority: addressPubKey,
+        //     payer: addressPubKey,
+        //     metadata: metadataPda,
+        //   },
+        //   { createMasterEditionArgs: { maxSupply: 0 } },
+        // ),
       );
-      console.log('a', tx);
-    
 
       const blockHash = (await connection.getLatestBlockhash('finalized'))
         .blockhash;
       tx.feePayer = addressPubKey;
       tx.recentBlockhash = blockHash;
-      // tx.partialSign(mintKeypair);
-      // tx.sign(mintKeypair);
-    
+      tx.partialSign(mintKeypair);
+      console.log(tx);
 
-      const transactionBuffer = tx.serializeMessage();
-      const signature = sign.detached(transactionBuffer, mintKeypair.secretKey);
-      tx.addSignature(mintKeypair.publicKey, Buffer.from(signature));
-      console.log(tx.signatures[0].publicKey.toBase58());
-      console.log(tx.signatures[1].publicKey.toBase58());
+
+      // const signedTx = await wallet.signTransaction(tx);
+      // const txhash = await connection.sendRawTransaction(signedTx.serialize());
+
+      // const confirmTransaction = await sendAndConfirmTransaction(
+      //   connection,
+      //   tx,
+      //   [feePayer],
+      // );
+
+      // console.log('b', tx);
+      // // const transactionBuffer = tx.serializeMessage();
+      // // console.log('c', tx);
+
+      const serializedTransaction = tx.serialize({ requireAllSignatures: false });
+      console.log('serializedTransaction', serializedTransaction);
+      const transactionBase64 = serializedTransaction.toString('base64');
+
+      const recoveredTransaction = Transaction.from(
+        Buffer.from(transactionBase64, 'base64'),
+      );
+      const signedTx = await wallet.signTransaction(recoveredTransaction);
+      console.log(signedTx);
       
-      console.log('b', tx);
-      return bs58.encode(transactionBuffer);
+      // const txhash = await connection.sendRawTransaction(signedTx.serialize());
+      // // const signature = sign.detached(transactionBuffer, mintKeypair.secretKey);
+      // // tx.addSignature(mintKeypair.publicKey, Buffer.from(signature));
+      // // console.log(tx.signatures[0].publicKey.toBase58());
+      // // console.log(tx.signatures[1].publicKey.toBase58());
+      // console.log('d', tx);
+
+      return transactionBase64;
 
       // const nftCreationEvent = new NftCreationEvent(nft.mint.toString(), createParams.network, createParams.userId);
       // this.eventEmitter.emit('nft.created', nftCreationEvent);

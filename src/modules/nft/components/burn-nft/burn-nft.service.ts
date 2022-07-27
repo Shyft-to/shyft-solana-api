@@ -4,7 +4,6 @@ import { Connection } from '@metaplex/js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { createBurnCheckedInstruction, createCloseAccountInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
 import { BurnNftDto } from './dto/burn-nft.dto';
-import * as bs58 from 'bs58';
 
 @Injectable()
 export class BurnNftService {
@@ -45,8 +44,10 @@ export class BurnNftService {
       tx.feePayer = addressPubKey;
       tx.recentBlockhash = blockHash;
 
-      const transactionBuffer = tx.serializeMessage();
-      return bs58.encode(transactionBuffer);
+      const serializedTransaction = tx.serialize({ requireAllSignatures: false });
+      const transactionBase64 = serializedTransaction.toString('base64');
+
+      return transactionBase64;
 
       // const nftCreationEvent = new NftDeleteEvent(token_address);
       // this.eventEmitter.emit('nft.deleted', nftCreationEvent);

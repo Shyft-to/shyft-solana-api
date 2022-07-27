@@ -12,7 +12,7 @@ export function SendBalanceDetachOpenApi() {
           success: true,
           message: 'Transaction created',
           result: {
-            transactionBuffer: '87PYteJ9g1qtLiePnQkKnXHwGkFXoJDXqDMkpVpstpUT2z1extcWmt9Nm25UNx6xgnMnBJTxyqUvsvUYJ1BHCJjWXysQsu4ar9vfTFtgz3jBZ9f6aNqT5eCGaBRJNNtRh2X8sKWmt97zetqx96KoFzZaJF47kkaU6zm6DxPTdQYkzCUi5Davaav1TaEk5cCkC4YQbw1ZzbNF',
+            tx: '5S7tJbjKwSn1iUkibeHgL4DepG5TysAqJ8WTAFBT3b4mTekRbeoGd13hkbw5zRi9knZGwn6xmtx6JHnpqXocYybe',
           },
         },
       },
