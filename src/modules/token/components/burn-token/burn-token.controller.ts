@@ -14,12 +14,12 @@ export class BurnTokenController {
   @Delete('burn')
   @Version('1')
   async burnToken(@Body() burnTokenDto: BurnTokenDto): Promise<any> {
-    const result = await this.burnTokenService.burnToken(burnTokenDto);
+    const encoded_transaction = await this.burnTokenService.burnToken(burnTokenDto);
 
     return {
       success: true,
       message: 'Token burned successfully',
-      result,
+      result: { encoded_transaction },
     };
   }
 }
