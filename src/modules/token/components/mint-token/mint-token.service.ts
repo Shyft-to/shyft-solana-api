@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { mintToChecked, getOrCreateAssociatedTokenAccount, getMint } from '@solana/spl-token';
-import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import { AccountUtils } from 'src/common/utils/account-utils';
+import { getMint, getAssociatedTokenAddress, createMintToCheckedInstruction, createAssociatedTokenAccountInstruction, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { clusterApiUrl, Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { MintTokenDto } from './dto/mint-token.dto';
 
 @Injectable()
@@ -10,43 +9,52 @@ export class MintTokenService {
     try {
       const {
         network,
-        private_key,
+        address,
         token_address: token_address,
         amount,
-        receiver,
       } = mintTokenDto;
 
       const connection = new Connection(clusterApiUrl(network), 'confirmed');
-      const feePayer = AccountUtils.getKeypair(private_key);
-
       const tokenAddressPubkey = new PublicKey(token_address);
       const tokenInfo = await getMint(connection, tokenAddressPubkey);
+      const addressPubkey = new PublicKey(address);
 
       if (tokenInfo.isInitialized) {
-        if (tokenInfo.mintAuthority.toBase58() !== feePayer.publicKey.toBase58()) {
+        if (tokenInfo.mintAuthority.toBase58() !== address) {
           throw Error('You dont have the authority to mint these tokens');
         }
-        //Get or Create an associated token address for receiver.
-        const tokenAccountOwner = await getOrCreateAssociatedTokenAccount(
-          connection,
-          feePayer,
-          new PublicKey(token_address),
-          new PublicKey(receiver),
+        const associatedTokenAddress = await getAssociatedTokenAddress(
+          tokenAddressPubkey,
+          addressPubkey,
         );
-
         const decimalAmount = Math.pow(10, tokenInfo.decimals);
 
-        const txhash = await mintToChecked(
-          connection, // connection
-          feePayer, // fee payer
-          tokenAddressPubkey, // mint
-          tokenAccountOwner.address, // receiver (sholud be a token account)
-          feePayer, // mint authority
-          decimalAmount * amount,
-          tokenInfo.decimals, // decimals
+        const tx = new Transaction().add(
+          createAssociatedTokenAccountInstruction(
+            addressPubkey,
+            associatedTokenAddress,
+            addressPubkey,
+            tokenAddressPubkey,
+            TOKEN_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+          ),
+          createMintToCheckedInstruction(
+            tokenAddressPubkey, // mint
+            associatedTokenAddress, // destination
+            addressPubkey, // authority
+            decimalAmount * amount, // amount
+            tokenInfo.decimals, // decimals
+          ),
         );
 
-        return { txhash };
+        const blockHash = (await connection.getLatestBlockhash('finalized')).blockhash;
+        tx.recentBlockhash = blockHash;
+        tx.feePayer = addressPubkey;
+
+        const serializedTransaction = tx.serialize({ requireAllSignatures: false });
+        const transactionBase64 = serializedTransaction.toString('base64');
+
+        return transactionBase64;
       } else {
         throw Error('Token not initialized');
       }
